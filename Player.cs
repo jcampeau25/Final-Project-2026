@@ -12,8 +12,8 @@ namespace Final_Project_2026
 {
     public class Player
     {
-        private Rectangle _hitbox;
-        private Rectangle _drawRect;
+        public Rectangle _hitbox;
+        public Rectangle _drawRect;
         private Vector2 _speed;
         private Texture2D _texture, _bulletTexture;
         private Color _color;
@@ -23,11 +23,12 @@ namespace Final_Project_2026
         public int _ammo, _maxAmmo;
         public bool _reloading;
         public float _reloadTimer;
+        public int _health, _maxHealth;
 
         List<Bullet> bullets;
         
 
-        public Player(Rectangle hitbox, Vector2 position, Texture2D texture, Color color, Texture2D bulletTexture)
+        public Player(Rectangle hitbox, Vector2 position, Texture2D texture, Color color, Texture2D bulletTexture, int maxHealth)
         {
             _hitbox = hitbox;
             _drawRect = new Rectangle(position.ToPoint(), new Point(67, 67));
@@ -35,6 +36,8 @@ namespace Final_Project_2026
             _texture = texture;
             _color = color;
             _rotation = 0;
+            _health = maxHealth;
+            _maxHealth = maxHealth;
             _maxAmmo = 20;
             _ammo = 20;
             bullets = new List<Bullet>();
@@ -85,7 +88,7 @@ namespace Final_Project_2026
             {
                 _reloadTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 
-                if (_reloadTimer >= 3)
+                if (_reloadTimer >= 2)
                 {
                     _ammo = _maxAmmo;
                     _reloadTimer = 0;
