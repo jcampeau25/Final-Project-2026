@@ -1,6 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Final_Project_2026
 {
@@ -15,7 +17,7 @@ namespace Final_Project_2026
 
         Player player;
 
-        ShooterGuard guard1;
+        List<ShooterGuard> level1ShooterGuards;
 
         Texture2D playerTexture, guardTexture, bulletTexture, crosshairTexture, ammoTexture, healthBarTexture;
         SpriteFont ammoFont, reloadingFont;
@@ -34,10 +36,11 @@ namespace Final_Project_2026
             // TODO: Add your initialization logic here
 
             base.Initialize();
+            level1ShooterGuards = new List<ShooterGuard>();
 
             player = new Player(new Rectangle(50, 50, 67, 67), new Vector2(50, 50), playerTexture, Color.White, bulletTexture, 100);
 
-            guard1 = new ShooterGuard(new Rectangle(500, 500, 50, 50), new Vector2(500, 500), guardTexture, Color.White, bulletTexture, 100);
+            level1ShooterGuards.Add(new ShooterGuard(new Rectangle(500, 500, 50, 50), new Vector2(500, 500), guardTexture, Color.White, bulletTexture, 25));
 
             _graphics.PreferredBackBufferWidth = 1000;
             _graphics.PreferredBackBufferHeight = 800;
@@ -77,22 +80,22 @@ namespace Final_Project_2026
 
             if (keyboardState.IsKeyDown(Keys.X) && prevKeyboardState.IsKeyUp(Keys.X))
             {
-                player._health -= 10;
+                player.Health -= 10;
             }
 
-            if (player._health <= 0)
+            if (player.Health <= 0)
             {
-                player._health = 0;
+                player.Health = 0;
             }
 
             if (keyboardState.IsKeyDown(Keys.C) && prevKeyboardState.IsKeyUp(Keys.C))
             {
-                player._health += 10;
+                player.Health += 10;
             }
 
-            if (player._health >= player._maxHealth)
+            if (player.Health >= player.MaxHealth)
             {
-                player._health = player._maxHealth;
+                player.Health = player.MaxHealth;
             }
 
 
@@ -100,8 +103,22 @@ namespace Final_Project_2026
 
             player.Update(keyboardState, mouseState, prevMouseState, gameTime);
 
-            guard1.Update(gameTime, player);
+            foreach (ShooterGuard shooterGuard in level1ShooterGuards)
+            {
+                shooterGuard.Update(gameTime, player);
 
+                for (int i = 0; i < player.Bullets.Count; i++)
+                {
+          
+                    if (player.Bullets[i].Hitbox.Intersects(shooterGuard.DrawRect))
+                    {
+                        shooterGuard.Health -= player.Damage;
+                        
+                        player.Bullets.Remove(player.Bullets[i]);
+                    }
+                    
+                }
+            }
             base.Update(gameTime);
         }
 
@@ -113,19 +130,23 @@ namespace Final_Project_2026
 
             _spriteBatch.Begin();
             player.Draw(_spriteBatch);
-            guard1.Draw(_spriteBatch);
-
+            foreach (ShooterGuard shooterGuard1 in level1ShooterGuards)
+            {
+                shooterGuard1.Draw(_spriteBatch);
+            }
             //_spriteBatch.Draw(healthBarTexture, player._hitbox, Color.Red * 0.2f);
             //_spriteBatch.Draw(healthBarTexture, guard1._hitbox, Color.Red * 0.2f);
 
             _spriteBatch.Draw(ammoTexture, new Rectangle(920, 680, 48, 70), Color.White);
-            _spriteBatch.DrawString(ammoFont, player._ammo.ToString(), new Vector2(855, 695), Color.White);
-            _spriteBatch.Draw(healthBarTexture, new Rectangle(50, 720, player._maxHealth * 2, 20), Color.Gray);
-            _spriteBatch.Draw(healthBarTexture, new Rectangle(50, 720, player._health * 2, 20), Color.Lime);
+            _spriteBatch.DrawString(ammoFont, player.Ammo.ToString(), new Vector2(855, 695), Color.White);
+            _spriteBatch.Draw(healthBarTexture, new Rectangle(50, 720, player.MaxHealth * 2, 20), Color.Gray);
+            _spriteBatch.Draw(healthBarTexture, new Rectangle(50, 720, player.Health * 2, 20), Color.Lime);
+
+            _spriteBatch.Draw(healthBarTexture, new Rectangle(level1ShooterGuards[0].DrawRect.Left - 3, level1ShooterGuards[0].DrawRect.Top - 10, level1ShooterGuards[0].MaxHealth * 2, 4), Color.Gray);
+            _spriteBatch.Draw(healthBarTexture, new Rectangle(level1ShooterGuards[0].DrawRect.Left - 3, level1ShooterGuards[0].DrawRect.Top - 10, level1ShooterGuards[0].Health * 2, 4), Color.Lime);
 
 
-
-            if (player._reloading)
+            if (player.Reloading)
             {
                 _spriteBatch.DrawString(reloadingFont, ("reloading"), new Vector2(860, 750), Color.Red);
 

@@ -12,46 +12,48 @@ namespace Final_Project_2026
 {
     public class Player
     {
-        public Rectangle _hitbox;
-        public Rectangle _drawRect;
+        public Rectangle Hitbox;
+        public Rectangle DrawRect;
         private Vector2 _speed;
         private Texture2D _texture, _bulletTexture;
         private Color _color;
         private float _rotation;
-        public Vector2 _position;
-        public Vector2 _direction;
-        public int _ammo, _maxAmmo;
-        public bool _reloading;
-        public float _reloadTimer;
-        public int _health, _maxHealth;
+        public Vector2 Position;
+        public Vector2 Direction;
+        public int Ammo, MaxAmmo;
+        public bool Reloading;
+        public float ReloadTimer;
+        public int Health, MaxHealth;
+        public int Damage;
 
-        List<Bullet> bullets;
+        public List<Bullet> Bullets;
         
 
         public Player(Rectangle hitbox, Vector2 position, Texture2D texture, Color color, Texture2D bulletTexture, int maxHealth)
         {
-            _hitbox = hitbox;
-            _drawRect = new Rectangle(position.ToPoint(), new Point(67, 67));
+            Hitbox = hitbox;
+            DrawRect = new Rectangle(position.ToPoint(), new Point(67, 67));
             _speed = Vector2.Zero;
             _texture = texture;
             _color = color;
             _rotation = 0;
-            _health = maxHealth;
-            _maxHealth = maxHealth;
-            _maxAmmo = 20;
-            _ammo = 20;
-            bullets = new List<Bullet>();
+            Health = maxHealth;
+            MaxHealth = maxHealth;
+            MaxAmmo = 10;
+            Ammo = 10;
+            Bullets = new List<Bullet>();
             _bulletTexture = bulletTexture;
+            Damage = 5;
         }
-
+        
         public void Draw(SpriteBatch spriteBatch)
         {
-            foreach (Bullet bullet in bullets)
+            foreach (Bullet bullet in Bullets)
             {
                 bullet.Draw(spriteBatch);
             }
 
-            spriteBatch.Draw(_texture, new Rectangle(_drawRect.Center, _drawRect.Size), null, _color, _rotation, new Vector2(_texture.Width / 2, _texture.Height / 2), SpriteEffects.None, 1f);
+            spriteBatch.Draw(_texture, new Rectangle(DrawRect.Center, DrawRect.Size), null, _color, _rotation, new Vector2(_texture.Width / 2, _texture.Height / 2), SpriteEffects.None, 1f);
             
         }
 
@@ -79,47 +81,47 @@ namespace Final_Project_2026
                 _speed.Y += 4;
             }
 
-            if ((keyboardState.IsKeyDown(Keys.R) || _ammo == 0) && _reloading == false && _ammo <= _maxAmmo)
+            if ((keyboardState.IsKeyDown(Keys.R) || Ammo == 0) && Reloading == false && Ammo <= MaxAmmo)
             {
-                _reloading = true;
+                Reloading = true;
             }
 
-            if (_reloading == true)
+            if (Reloading == true)
             {
-                _reloadTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                ReloadTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
                 
-                if (_reloadTimer >= 2)
+                if (ReloadTimer >= 2)
                 {
-                    _ammo = _maxAmmo;
-                    _reloadTimer = 0;
-                    _reloading = false;
+                    Ammo = MaxAmmo;
+                    ReloadTimer = 0;
+                    Reloading = false;
                 }
             }
 
-            if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released && _reloading == false && _ammo >= 0)
+            if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released && Reloading == false && Ammo >= 0)
             {
                 Vector2 direction;
 
-                direction = mouseState.Position.ToVector2() - _drawRect.Center.ToVector2();
+                direction = mouseState.Position.ToVector2() - DrawRect.Center.ToVector2();
 
                 direction.Normalize();
 
 
-                bullets.Add(new Bullet(_drawRect.Center.ToVector2(), _bulletTexture, direction, 700));
-                _ammo += -1;
+                Bullets.Add(new Bullet(DrawRect.Center.ToVector2(), _bulletTexture, direction, Color.White, 700));
+                Ammo += -1;
                
             }
 
-            foreach (Bullet bullet in bullets)
+            foreach (Bullet bullet in Bullets)
             {
                 bullet.Update(gameTime);
             }
 
-            _hitbox.Offset(_speed);
-            _drawRect.Offset(_speed);
+            Hitbox.Offset(_speed);
+            DrawRect.Offset(_speed);
 
-            _direction = mouseState.Position.ToVector2() - _drawRect.Center.ToVector2();
-            _rotation = (float)Math.Atan2(_direction.Y, _direction.X) + MathHelper.PiOver2;
+            Direction = mouseState.Position.ToVector2() - DrawRect.Center.ToVector2();
+            _rotation = (float)Math.Atan2(Direction.Y, Direction.X) + MathHelper.PiOver2;
 
         }
     }
