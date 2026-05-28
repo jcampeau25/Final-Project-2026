@@ -107,7 +107,7 @@ namespace Final_Project_2026
                 direction.Normalize();
 
 
-                Bullets.Add(new Bullet(DrawRect.Center.ToVector2(), _bulletTexture, direction, Color.White, 700));
+                Bullets.Add(new Bullet(DrawRect.Center.ToVector2(), _bulletTexture, direction, Color.Gray, 700));
                 Ammo += -1;
                
             }
@@ -117,12 +117,20 @@ namespace Final_Project_2026
                 bullet.Update(gameTime);
             }
 
-            Hitbox.Offset(_speed);
+            
             DrawRect.Offset(_speed);
+            UpdateHitbox();
+
+
 
             Direction = mouseState.Position.ToVector2() - DrawRect.Center.ToVector2();
             _rotation = (float)Math.Atan2(Direction.Y, Direction.X) + MathHelper.PiOver2;
 
+        }
+        private void UpdateHitbox()
+        {
+            Hitbox.X = DrawRect.X + 12;
+            Hitbox.Y = DrawRect.Y + 12;
         }
     }
 }

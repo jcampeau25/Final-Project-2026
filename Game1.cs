@@ -2,10 +2,27 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Final_Project_2026
 {
+
+    enum Screen
+    {
+        Title,
+        Level1,
+        Level2,
+        Level3,
+    }
+
+    enum Level1Room
+    { 
+        Room1,
+        Room2,
+        Room3
+    }
+
+
+
     public class Game1 : Game
     {
         private GraphicsDeviceManager _graphics;
@@ -19,8 +36,14 @@ namespace Final_Project_2026
 
         List<ShooterGuard> level1ShooterGuards;
 
-        Texture2D playerTexture, guardTexture, bulletTexture, crosshairTexture, ammoTexture, healthBarTexture;
+        Texture2D playerTexture, guardTexture, bulletTexture, crosshairTexture, ammoTexture, healthBarTexture, wallTexture;
         SpriteFont ammoFont, reloadingFont;
+
+
+        Screen screen;
+
+        Level1Room Level1Room;
+
 
 
         public Game1()
@@ -38,7 +61,7 @@ namespace Final_Project_2026
             base.Initialize();
             level1ShooterGuards = new List<ShooterGuard>();
 
-            player = new Player(new Rectangle(50, 50, 67, 67), new Vector2(50, 50), playerTexture, Color.White, bulletTexture, 100);
+            player = new Player(new Rectangle(50, 50, 43, 43), new Vector2(50, 50), playerTexture, Color.White, bulletTexture, 100);
 
             level1ShooterGuards.Add(new ShooterGuard(new Rectangle(500, 500, 50, 50), new Vector2(500, 500), guardTexture, Color.White, bulletTexture, 25));
 
@@ -59,9 +82,11 @@ namespace Final_Project_2026
             crosshairTexture = Content.Load<Texture2D>("Images/crosshair");
             ammoTexture = Content.Load<Texture2D>("Images/ammo_icon");
             healthBarTexture = Content.Load<Texture2D>("Images/rectangle");
+            wallTexture = Content.Load<Texture2D>("Images/brick wall");
 
             ammoFont = Content.Load<SpriteFont>("Fonts/ammoFont");
             reloadingFont = Content.Load<SpriteFont>("Fonts/reloadingFont");
+            
             
         }
 
@@ -77,6 +102,7 @@ namespace Final_Project_2026
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
 
             if (keyboardState.IsKeyDown(Keys.X) && prevKeyboardState.IsKeyUp(Keys.X))
             {
@@ -103,6 +129,8 @@ namespace Final_Project_2026
 
             player.Update(keyboardState, mouseState, prevMouseState, gameTime);
 
+
+
             foreach (ShooterGuard shooterGuard in level1ShooterGuards)
             {
                 shooterGuard.Update(gameTime, player);
@@ -119,12 +147,28 @@ namespace Final_Project_2026
                     
                 }
             }
+
+           for (int i = 0; i < level1ShooterGuards.Count; i++)
+            {
+                for (int j = 0; j < level1ShooterGuards[i].Bullets.Count; j++)
+                {
+                    if (level1ShooterGuards[i].Bullets[j].Hitbox.Intersects(player.DrawRect))
+                    {
+                        player.Health -= 20;
+
+                        level1ShooterGuards[i].Bullets.Remove(level1ShooterGuards[i].Bullets[j]);
+                    }
+                }
+            }
+
+
+
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.DarkGray);
 
             // TODO: Add your drawing code here
 
@@ -134,8 +178,11 @@ namespace Final_Project_2026
             {
                 shooterGuard1.Draw(_spriteBatch);
             }
-            //_spriteBatch.Draw(healthBarTexture, player._hitbox, Color.Red * 0.2f);
-            //_spriteBatch.Draw(healthBarTexture, guard1._hitbox, Color.Red * 0.2f);
+            _spriteBatch.Draw(healthBarTexture, player.Hitbox, Color.Red * 0.2f);
+            _spriteBatch.Draw(healthBarTexture, level1ShooterGuards[0].Hitbox, Color.Red * 0.2f);
+            _spriteBatch.Draw(healthBarTexture, player.DrawRect, Color.Red * 0.2f);
+            _spriteBatch.Draw(healthBarTexture, level1ShooterGuards[0].DrawRect, Color.Red * 0.2f);
+
 
             _spriteBatch.Draw(ammoTexture, new Rectangle(920, 680, 48, 70), Color.White);
             _spriteBatch.DrawString(ammoFont, player.Ammo.ToString(), new Vector2(855, 695), Color.White);
@@ -151,6 +198,7 @@ namespace Final_Project_2026
                 _spriteBatch.DrawString(reloadingFont, ("reloading"), new Vector2(860, 750), Color.Red);
 
             }
+
 
 
             _spriteBatch.Draw(crosshairTexture, mouseState.Position.ToVector2(), null, Color.White, 0, new Vector2(crosshairTexture.Width / 2, crosshairTexture.Height / 2), 0.6f, SpriteEffects.None, 0f);
