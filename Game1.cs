@@ -12,6 +12,7 @@ namespace Final_Project_2026
         Level1,
         Level2,
         Level3,
+        Workbench
     }
 
     enum Level1Room
@@ -21,6 +22,7 @@ namespace Final_Project_2026
         Room3
     }
 
+    
 
 
     public class Game1 : Game
@@ -35,10 +37,15 @@ namespace Final_Project_2026
         Player player;
 
         List<ShooterGuard> level1ShooterGuards;
+        List<MeleeGuard> level1MeleeGuards;
 
-        Texture2D playerTexture, guardTexture, bulletTexture, crosshairTexture, ammoTexture, healthBarTexture, wallTexture;
+        List<Workbench> workbenches;
+
+        Texture2D playerTexture, shooterGuardTexture, meleeGuardTexture, bulletTexture, crosshairTexture,
+                  ammoTexture, healthBarTexture, wallTexture, workbenchTexture;
         SpriteFont ammoFont, reloadingFont;
 
+        int score = 0;
 
         Screen screen;
 
@@ -60,10 +67,18 @@ namespace Final_Project_2026
 
             base.Initialize();
             level1ShooterGuards = new List<ShooterGuard>();
+            level1MeleeGuards = new List<MeleeGuard>();
+            workbenches = new List<Workbench>();
 
             player = new Player(new Rectangle(50, 50, 43, 43), new Vector2(50, 50), playerTexture, Color.White, bulletTexture, 100);
 
-            level1ShooterGuards.Add(new ShooterGuard(new Rectangle(500, 500, 50, 50), new Vector2(500, 500), guardTexture, Color.White, bulletTexture, 25));
+            level1ShooterGuards.Add(new ShooterGuard(new Rectangle(500, 500, 50, 50), new Vector2(500, 500), shooterGuardTexture, Color.White, bulletTexture, 25));
+            level1MeleeGuards.Add(new MeleeGuard(new Rectangle(600, 200, 50, 50), new Vector2(600, 200), new Vector2(5,5), meleeGuardTexture, 25, 5));
+
+
+
+
+            workbenches.Add(new Workbench(new Rectangle(200, 0, 150, 100), workbenchTexture));
 
             _graphics.PreferredBackBufferWidth = 1000;
             _graphics.PreferredBackBufferHeight = 800;
@@ -77,12 +92,14 @@ namespace Final_Project_2026
 
             // TODO: use this.Content to load your game content here
             playerTexture = Content.Load<Texture2D>("Images/player_gun");
-            guardTexture = Content.Load<Texture2D>("Images/guard");
+            shooterGuardTexture = Content.Load<Texture2D>("Images/guard");
+            meleeGuardTexture = Content.Load<Texture2D>("Images/MeleeGuard");
             bulletTexture = Content.Load<Texture2D>("Images/bullet");
             crosshairTexture = Content.Load<Texture2D>("Images/crosshair");
             ammoTexture = Content.Load<Texture2D>("Images/ammo_icon");
             healthBarTexture = Content.Load<Texture2D>("Images/rectangle");
             wallTexture = Content.Load<Texture2D>("Images/brick wall");
+            workbenchTexture = Content.Load<Texture2D>("Images/workbench");
 
             ammoFont = Content.Load<SpriteFont>("Fonts/ammoFont");
             reloadingFont = Content.Load<SpriteFont>("Fonts/reloadingFont");
@@ -148,6 +165,23 @@ namespace Final_Project_2026
                 }
             }
 
+            foreach (MeleeGuard meleeGuard in level1MeleeGuards)
+            {
+                meleeGuard.Update(gameTime, player);
+
+                for (int i = 0; i < player.Bullets.Count; i++)
+                {
+
+                    if (player.Bullets[i].Hitbox.Intersects(meleeGuard.DrawRect))
+                    {
+                        meleeGuard.Health -= player.Damage;
+
+                        player.Bullets.Remove(player.Bullets[i]);
+                    }
+
+                }
+            }
+
            for (int i = 0; i < level1ShooterGuards.Count; i++)
             {
                 for (int j = 0; j < level1ShooterGuards[i].Bullets.Count; j++)
@@ -161,7 +195,16 @@ namespace Final_Project_2026
                 }
             }
 
-
+           foreach (Workbench workbench in workbenches)
+           {
+                if (player.Hitbox.Intersects(workbench.Location))
+                {
+                    if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
+                    {
+                        screen = Screen.Workbench;
+                    }
+                }
+           }
 
             base.Update(gameTime);
         }
@@ -174,13 +217,25 @@ namespace Final_Project_2026
 
             _spriteBatch.Begin();
             player.Draw(_spriteBatch);
+
+            workbenches[0].Draw(_spriteBatch);
+
+
             foreach (ShooterGuard shooterGuard1 in level1ShooterGuards)
             {
                 shooterGuard1.Draw(_spriteBatch);
             }
+
+            foreach (MeleeGuard meleeGuard in level1MeleeGuards)
+            {
+                meleeGuard.Draw(_spriteBatch);
+            }
+
             _spriteBatch.Draw(healthBarTexture, player.Hitbox, Color.Red * 0.2f);
-            _spriteBatch.Draw(healthBarTexture, level1ShooterGuards[0].Hitbox, Color.Red * 0.2f);
             _spriteBatch.Draw(healthBarTexture, player.DrawRect, Color.Red * 0.2f);
+
+
+            _spriteBatch.Draw(healthBarTexture, level1ShooterGuards[0].Hitbox, Color.Red * 0.2f);
             _spriteBatch.Draw(healthBarTexture, level1ShooterGuards[0].DrawRect, Color.Red * 0.2f);
 
 
@@ -189,9 +244,17 @@ namespace Final_Project_2026
             _spriteBatch.Draw(healthBarTexture, new Rectangle(50, 720, player.MaxHealth * 2, 20), Color.Gray);
             _spriteBatch.Draw(healthBarTexture, new Rectangle(50, 720, player.Health * 2, 20), Color.Lime);
 
-            _spriteBatch.Draw(healthBarTexture, new Rectangle(level1ShooterGuards[0].DrawRect.Left - 3, level1ShooterGuards[0].DrawRect.Top - 10, level1ShooterGuards[0].MaxHealth * 2, 4), Color.Gray);
-            _spriteBatch.Draw(healthBarTexture, new Rectangle(level1ShooterGuards[0].DrawRect.Left - 3, level1ShooterGuards[0].DrawRect.Top - 10, level1ShooterGuards[0].Health * 2, 4), Color.Lime);
+            for (int i = 0; i < level1ShooterGuards.Count; i++)
+            {
+                _spriteBatch.Draw(healthBarTexture, new Rectangle(level1ShooterGuards[i].DrawRect.Left - 3, level1ShooterGuards[0].DrawRect.Top - 10, level1ShooterGuards[0].MaxHealth * 2, 4), Color.Gray);
+                _spriteBatch.Draw(healthBarTexture, new Rectangle(level1ShooterGuards[i].DrawRect.Left - 3, level1ShooterGuards[0].DrawRect.Top - 10, level1ShooterGuards[0].Health * 2, 4), Color.Lime);
+            }
 
+            for (int i = 0; i < level1MeleeGuards.Count; i++)
+            {
+                _spriteBatch.Draw(healthBarTexture, new Rectangle(level1MeleeGuards[i].DrawRect.Left - 3, level1MeleeGuards[0].DrawRect.Top - 10, level1MeleeGuards[0].MaxHealth * 2, 4), Color.Gray);
+                _spriteBatch.Draw(healthBarTexture, new Rectangle(level1MeleeGuards[i].DrawRect.Left - 3, level1MeleeGuards[0].DrawRect.Top - 10, level1MeleeGuards[0].Health * 2, 4), Color.Lime);
+            }
 
             if (player.Reloading)
             {
