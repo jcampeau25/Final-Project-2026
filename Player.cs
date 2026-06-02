@@ -14,7 +14,7 @@ namespace Final_Project_2026
     {
         public Rectangle Hitbox;
         public Rectangle DrawRect;
-        private Vector2 _speed;
+        public Vector2 Speed;
         private Texture2D _texture, _bulletTexture;
         private Color _color;
         private float _rotation;
@@ -33,7 +33,7 @@ namespace Final_Project_2026
         {
             Hitbox = hitbox;
             DrawRect = new Rectangle(position.ToPoint(), new Point(67, 67));
-            _speed = Vector2.Zero;
+            Speed = Vector2.Zero;
             _texture = texture;
             _color = color;
             _rotation = 0;
@@ -59,29 +59,29 @@ namespace Final_Project_2026
 
         public void Update(KeyboardState keyboardState, MouseState mouseState, MouseState prevMouseState, GameTime gameTime)
         {
-            _speed = Vector2.Zero;
+            Speed = Vector2.Zero;
 
             if (keyboardState.IsKeyDown(Keys.D))
             {
-                _speed.X += 4;
+                Speed.X += 4;
             }
 
             if (keyboardState.IsKeyDown(Keys.A))
             {
-                _speed.X += -4;
+                Speed.X += -4;
             }
 
             if (keyboardState.IsKeyDown(Keys.W))
             {
-                _speed.Y += -4;
+                Speed.Y += -4;
 
             }
             if (keyboardState.IsKeyDown(Keys.S))
             {
-                _speed.Y += 4;
+                Speed.Y += 4;
             }
 
-            if ((keyboardState.IsKeyDown(Keys.R) || Ammo == 0) && Reloading == false && Ammo <= MaxAmmo)
+            if ((keyboardState.IsKeyDown(Keys.R) || Ammo == 0) && Reloading == false && Ammo < MaxAmmo)
             {
                 Reloading = true;
             }
@@ -118,7 +118,7 @@ namespace Final_Project_2026
             }
 
             
-            DrawRect.Offset(_speed);
+            DrawRect.Offset(Speed);
             UpdateHitbox();
 
 

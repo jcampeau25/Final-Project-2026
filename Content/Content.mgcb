@@ -27,6 +27,13 @@
 /processorParam:TextureFormat=Compressed
 /build:Fonts/reloadingFont.spritefont
 
+#begin Fonts/upgradeFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:Fonts/upgradeFont.spritefont
+
 #begin Images/ammo_icon.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -87,6 +94,18 @@
 /processorParam:TextureFormat=Color
 /build:Images/guard.png
 
+#begin Images/JailhouseIntro.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/JailhouseIntro.png
+
 #begin Images/MeleeGuard.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -122,6 +141,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Images/rectangle.png
+
+#begin Images/Upgrades.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/Upgrades.png
 
 #begin Images/workbench.png
 /importer:TextureImporter
