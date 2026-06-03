@@ -2,6 +2,8 @@
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Security.Cryptography;
 
 namespace Final_Project_2026
 {
@@ -40,6 +42,7 @@ namespace Final_Project_2026
         List<MeleeGuard> level1MeleeGuards;
         List<Rectangle> wallsL1R1;
         List<Rectangle>wallsL1R2;
+        List<Rectangle> wallsL1R3;
 
         List<Workbench> workbenches;
 
@@ -48,7 +51,7 @@ namespace Final_Project_2026
 
         Texture2D titleTexture, upgradesTexture;
 
-        SpriteFont ammoFont, reloadingFont, upgradeFont;
+        SpriteFont ammoFont, reloadingFont, upgradeFont, infoFont;
 
         int score = 0;
 
@@ -83,6 +86,7 @@ namespace Final_Project_2026
 
             wallsL1R1 = new List<Rectangle>();
             wallsL1R2 = new List<Rectangle>();
+            wallsL1R3 = new List<Rectangle>();
 
             //wallsL1R1.Add();
 
@@ -99,11 +103,19 @@ namespace Final_Project_2026
             wallsL1R1.Add(new Rectangle(980, 0, 20, 300));
             wallsL1R1.Add(new Rectangle(980, 500, 20, 300));
 
-            wallsL1R2.Add(new Rectangle(0, 0, 1000, 20));
+            wallsL1R2.Add(new Rectangle(0, 0, 400, 20));
+            wallsL1R2.Add(new Rectangle(600, 0, 400, 20));
             wallsL1R2.Add(new Rectangle(0, 780, 1000, 20));
             wallsL1R2.Add(new Rectangle(980, 0, 20, 800));
             wallsL1R2.Add(new Rectangle(0, 0, 20, 300));
             wallsL1R2.Add(new Rectangle(0, 500, 20, 300));
+
+            wallsL1R3.Add(new Rectangle(0, 0, 1000, 20));
+            wallsL1R3.Add(new Rectangle(0, 780, 400, 20));
+            wallsL1R3.Add(new Rectangle(600, 780, 400, 20));
+            wallsL1R3.Add(new Rectangle(980, 0, 20, 800));
+            wallsL1R3.Add(new Rectangle(0, 0, 20, 800));
+
 
             window = new Rectangle(0, 0, 1000, 800);
 
@@ -141,6 +153,7 @@ namespace Final_Project_2026
             ammoFont = Content.Load<SpriteFont>("Fonts/ammoFont");
             reloadingFont = Content.Load<SpriteFont>("Fonts/reloadingFont");
             upgradeFont = Content.Load<SpriteFont>("Fonts/upgradeFont");
+            infoFont = Content.Load<SpriteFont>("Fonts/infoFont");
 
             titleTexture = Content.Load<Texture2D>("Images/JailhouseIntro");
             upgradesTexture = Content.Load<Texture2D>("Images/Upgrades");
@@ -255,6 +268,18 @@ namespace Final_Project_2026
                         }
 
                     }
+
+                    if (player.DrawRect.Right <= 0)
+                    {
+                        Level1Room = Level1Room.Room1;
+                        player.DrawRect = new Rectangle(950, player.DrawRect.Y, player.DrawRect.Width, player.DrawRect.Height);
+                    }
+
+                    if (player.DrawRect.Bottom <= 0)
+                    {
+                        Level1Room = Level1Room.Room3;
+                        player.DrawRect = new Rectangle(player.DrawRect.X, 750, player.DrawRect.Width, player.DrawRect.Height);
+                    }
                 }
 
 
@@ -289,7 +314,26 @@ namespace Final_Project_2026
                 }
             }
 
-           foreach (Workbench workbench in workbenches)
+            if (screen == Screen.Level1 && Level1Room == Level1Room.Room3)
+            {
+                foreach (Rectangle wall in wallsL1R3)
+                {
+                    if (player.Hitbox.Intersects(wall))
+                    {
+                        player.DrawRect.Offset(-player.Speed);
+                    }
+                }
+
+                if (player.DrawRect.Top >= 800)
+                {
+                    Level1Room = Level1Room.Room2;
+                    player.DrawRect = new Rectangle(player.DrawRect.X, 0, player.DrawRect.Width, player.DrawRect.Height);
+                }
+
+            }
+
+
+            foreach (Workbench workbench in workbenches)
            {
                 if (player.Hitbox.Intersects(workbench.Location))
                 {
@@ -299,6 +343,10 @@ namespace Final_Project_2026
                     }
                 }
            }
+
+
+
+
 
            if (screen == Screen.Workbench)
            {
@@ -350,18 +398,21 @@ namespace Final_Project_2026
                 {
                     _spriteBatch.Draw(wallTexture, wall, Color.White);
                 }
+
+                _spriteBatch.DrawString(infoFont, "WASD to move", new Vector2(300, 50), Color.Black);
             }
 
 
 
             if (screen == Screen.Level1 && Level1Room == Level1Room.Room2)
             {
+                _spriteBatch.DrawString(infoFont, "Left Click to shoot guards", new Vector2(100, 600), Color.Black);
+
                 foreach (Rectangle wall in wallsL1R2)
                 {
                     _spriteBatch.Draw(wallTexture, wall, Color.White);
                 }
 
-                workbenches[0].Draw(_spriteBatch);
 
 
                 foreach (ShooterGuard shooterGuard1 in level1ShooterGuards)
@@ -399,6 +450,19 @@ namespace Final_Project_2026
 
             }
 
+            if (screen == Screen.Level1 && Level1Room == Level1Room.Room3)
+            {
+                _spriteBatch.DrawString(infoFont, "E to use workbench", new Vector2(400, 50), Color.Black);
+
+
+                foreach (Rectangle wall in wallsL1R3)
+                {
+                    _spriteBatch.Draw(wallTexture, wall, Color.White);
+                }
+
+                workbenches[0].Draw(_spriteBatch);
+            }
+
             if (screen == Screen.Workbench)
             {
 
@@ -425,15 +489,24 @@ namespace Final_Project_2026
                 _spriteBatch.DrawString(ammoFont, player.Ammo.ToString(), new Vector2(855, 695), Color.White);
                 _spriteBatch.Draw(healthBarTexture, new Rectangle(50, 720, player.MaxHealth * 2, 20), Color.Gray);
                 _spriteBatch.Draw(healthBarTexture, new Rectangle(50, 720, player.Health * 2, 20), Color.Lime);
+                _spriteBatch.DrawString(reloadingFont, $"HP", new Vector2(55, 720), Color.Black);
+
 
                 if (player.Reloading)
                 {
                     _spriteBatch.DrawString(reloadingFont, "reloading", new Vector2(860, 750), Color.Red);
 
                 }
+
+                _spriteBatch.DrawString(reloadingFont, $"Points: {score}", new Vector2(40, 40), Color.Black);
+
+
                 _spriteBatch.Draw(crosshairTexture, mouseState.Position.ToVector2(), null, Color.White, 0, new Vector2(crosshairTexture.Width / 2, crosshairTexture.Height / 2), 0.6f, SpriteEffects.None, 0f);
-                
+
+
             }
+
+            
 
             _spriteBatch.End();
 
