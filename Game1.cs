@@ -38,8 +38,8 @@ namespace Final_Project_2026
 
         Player player;
 
-        List<ShooterGuard> level1ShooterGuards;
-        List<MeleeGuard> level1MeleeGuards;
+        List<ShooterGuard> shooterL1R2;
+        List<MeleeGuard> meleeL1R2;
         List<Rectangle> wallsL1R1;
         List<Rectangle>wallsL1R2;
         List<Rectangle> wallsL1R3;
@@ -81,8 +81,8 @@ namespace Final_Project_2026
 
             screen = Screen.Title;
 
-            level1ShooterGuards = new List<ShooterGuard>();
-            level1MeleeGuards = new List<MeleeGuard>();
+            shooterL1R2 = new List<ShooterGuard>();
+            meleeL1R2 = new List<MeleeGuard>();
 
             wallsL1R1 = new List<Rectangle>();
             wallsL1R2 = new List<Rectangle>();
@@ -94,8 +94,8 @@ namespace Final_Project_2026
 
             player = new Player(new Rectangle(50, 50, 43, 43), new Vector2(50, 50), playerTexture, Color.White, bulletTexture, 100);
 
-            level1ShooterGuards.Add(new ShooterGuard(new Rectangle(500, 500, 50, 50), new Vector2(500, 500), shooterGuardTexture, Color.White, bulletTexture, 25));
-            level1MeleeGuards.Add(new MeleeGuard(new Rectangle(600, 200, 50, 50), new Vector2(600, 200), new Vector2(5,5), meleeGuardTexture, 25, 5));
+            shooterL1R2.Add(new ShooterGuard(new Rectangle(500, 500, 50, 50), new Vector2(500, 500), shooterGuardTexture, Color.White, bulletTexture, 25));
+            meleeL1R2.Add(new MeleeGuard(new Rectangle(600, 200, 50, 50), new Vector2(600, 200), new Vector2(5, 5), meleeGuardTexture, 25, 200, 1000));
 
             wallsL1R1.Add(new Rectangle(0, 0, 1000, 20));
             wallsL1R1.Add(new Rectangle(0, 780, 1000, 20));
@@ -253,7 +253,7 @@ namespace Final_Project_2026
                     }
                 }
 
-                foreach (ShooterGuard shooterGuard in level1ShooterGuards)
+                foreach (ShooterGuard shooterGuard in shooterL1R2)
                 {
                     shooterGuard.Update(gameTime, player);
 
@@ -283,7 +283,7 @@ namespace Final_Project_2026
                 }
 
 
-                foreach (MeleeGuard meleeGuard in level1MeleeGuards)
+                foreach (MeleeGuard meleeGuard in meleeL1R2)
                 {
                     meleeGuard.Update(gameTime, player);
 
@@ -300,15 +300,15 @@ namespace Final_Project_2026
                     }
                 }
 
-                for (int i = 0; i < level1ShooterGuards.Count; i++)
+                for (int i = 0; i < shooterL1R2.Count; i++)
                 {
-                    for (int j = 0; j < level1ShooterGuards[i].Bullets.Count; j++)
+                    for (int j = 0; j < shooterL1R2[i].Bullets.Count; j++)
                     {
-                        if (level1ShooterGuards[i].Bullets[j].Hitbox.Intersects(player.DrawRect))
+                        if (shooterL1R2[i].Bullets[j].Hitbox.Intersects(player.DrawRect))
                         {
                             player.Health -= 20;
 
-                            level1ShooterGuards[i].Bullets.Remove(level1ShooterGuards[i].Bullets[j]);
+                            shooterL1R2[i].Bullets.Remove(shooterL1R2[i].Bullets[j]);
                         }
                     }
                 }
@@ -415,33 +415,33 @@ namespace Final_Project_2026
 
 
 
-                foreach (ShooterGuard shooterGuard1 in level1ShooterGuards)
+                foreach (ShooterGuard shooterGuard1 in shooterL1R2)
                 {
                     shooterGuard1.Draw(_spriteBatch);
                 }
 
-                foreach (MeleeGuard meleeGuard in level1MeleeGuards)
+                foreach (MeleeGuard meleeGuard in meleeL1R2)
                 {
                     meleeGuard.Draw(_spriteBatch);
                 }
 
 
-                _spriteBatch.Draw(healthBarTexture, level1ShooterGuards[0].Hitbox, Color.Red * 0.2f);
-                _spriteBatch.Draw(healthBarTexture, level1ShooterGuards[0].DrawRect, Color.Red * 0.2f);
+                //_spriteBatch.Draw(healthBarTexture, level1ShooterGuards[0].Hitbox, Color.Red * 0.2f);
+                //_spriteBatch.Draw(healthBarTexture, level1ShooterGuards[0].DrawRect, Color.Red * 0.2f);
 
 
 
 
-                for (int i = 0; i < level1ShooterGuards.Count; i++)
+                for (int i = 0; i < shooterL1R2.Count; i++)
                 {
-                    _spriteBatch.Draw(healthBarTexture, new Rectangle(level1ShooterGuards[i].DrawRect.Left - 3, level1ShooterGuards[0].DrawRect.Top - 10, level1ShooterGuards[0].MaxHealth * 2, 4), Color.Gray);
-                    _spriteBatch.Draw(healthBarTexture, new Rectangle(level1ShooterGuards[i].DrawRect.Left - 3, level1ShooterGuards[0].DrawRect.Top - 10, level1ShooterGuards[0].Health * 2, 4), Color.Lime);
+                    _spriteBatch.Draw(healthBarTexture, new Rectangle(shooterL1R2[i].DrawRect.Left - 3, shooterL1R2[0].DrawRect.Top - 10, shooterL1R2[0].MaxHealth * 2, 4), Color.Gray);
+                    _spriteBatch.Draw(healthBarTexture, new Rectangle(shooterL1R2[i].DrawRect.Left - 3, shooterL1R2[0].DrawRect.Top - 10, shooterL1R2[0].Health * 2, 4), Color.Lime);
                 }
 
-                for (int i = 0; i < level1MeleeGuards.Count; i++)
+                for (int i = 0; i < meleeL1R2.Count; i++)
                 {
-                    _spriteBatch.Draw(healthBarTexture, new Rectangle(level1MeleeGuards[i].DrawRect.Left - 3, level1MeleeGuards[0].DrawRect.Top - 10, level1MeleeGuards[0].MaxHealth * 2, 4), Color.Gray);
-                    _spriteBatch.Draw(healthBarTexture, new Rectangle(level1MeleeGuards[i].DrawRect.Left - 3, level1MeleeGuards[0].DrawRect.Top - 10, level1MeleeGuards[0].Health * 2, 4), Color.Lime);
+                    _spriteBatch.Draw(healthBarTexture, new Rectangle(meleeL1R2[i].DrawRect.Left - 3, meleeL1R2[0].DrawRect.Top - 10, meleeL1R2[0].MaxHealth * 2, 4), Color.Gray);
+                    _spriteBatch.Draw(healthBarTexture, new Rectangle(meleeL1R2[i].DrawRect.Left - 3, meleeL1R2[0].DrawRect.Top - 10, meleeL1R2[0].Health * 2, 4), Color.Lime);
                 }
 
                 

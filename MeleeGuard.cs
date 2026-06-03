@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,28 +14,32 @@ namespace Final_Project_2026
     {
         public Rectangle Hitbox;
         public Rectangle DrawRect;
-        private Vector2 _speed;
+        private Vector2 velocity;
+        private float _speed;
         private Texture2D _texture;
         private Color _color;
         public float Rotation;
         public Vector2 Position;
         public Vector2 Direction;
-        public int Health, MaxHealth;
+        public int Health, MaxHealth, Damage;
 
 
 
 
-        public MeleeGuard(Rectangle hitbox, Vector2 position, Vector2 direction, Texture2D texture, int maxHealth, float speed)
+        public MeleeGuard(Rectangle hitbox, Vector2 position, Vector2 direction, Texture2D texture, int maxHealth, float speed, int damage)
         {
             Hitbox = hitbox;
             _texture = texture;
+            velocity = Vector2.Zero;
+            _speed = speed;
             DrawRect = new Rectangle(position.ToPoint(), new Point(50, 50));
-            _speed = new Vector2(direction.X * speed, direction.Y * speed);
+            velocity = new Vector2(direction.X * speed, direction.Y * speed);
             _color = Color.White;
             Rotation = 0;
             Health = maxHealth;
             MaxHealth = maxHealth;
-
+            Position = position;
+            Damage = damage;
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -46,18 +51,18 @@ namespace Final_Project_2026
         {
 
             Direction = player.DrawRect.Center.ToVector2() - DrawRect.Center.ToVector2();
+            Direction.Normalize();
             Rotation = (float)Math.Atan2(Direction.Y, Direction.X) + (3 * MathHelper.PiOver2);
 
-            Vector2 direction;
 
-
-            direction = player.DrawRect.Center.ToVector2() - DrawRect.Center.ToVector2();
-            direction.Normalize();
-
+            velocity = new Vector2(Direction.X * _speed, Direction.Y * _speed);
 
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            Position += _speed * dt;
+            Position += velocity * dt;
+
+            DrawRect = new Rectangle((int)Position.X, (int)Position.Y, 50, 50);
+            Debug.WriteLine(Position);
         }
 
     }
