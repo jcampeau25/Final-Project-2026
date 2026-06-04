@@ -1,12 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Final_Project_2026
 {
@@ -22,9 +16,9 @@ namespace Final_Project_2026
         public Vector2 Position;
         public Vector2 Direction;
         public int Health, MaxHealth, Damage;
-
-
-
+        public bool _attacking;
+        private float _attackSeconds;
+        private SpriteEffects _flip;
 
         public MeleeGuard(Rectangle hitbox, Vector2 position, Vector2 direction, Texture2D texture, int maxHealth, float speed, int damage)
         {
@@ -40,11 +34,13 @@ namespace Final_Project_2026
             MaxHealth = maxHealth;
             Position = position;
             Damage = damage;
+            _attacking = false;
+            _flip = SpriteEffects.None;
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw(_texture, new Rectangle(DrawRect.Center, DrawRect.Size), null, _color, Rotation, new Vector2(_texture.Width / 2, _texture.Height / 2), SpriteEffects.None, 1f);
+            spriteBatch.Draw(_texture, new Rectangle(DrawRect.Center, DrawRect.Size), null, _color, Rotation, new Vector2(_texture.Width / 2, _texture.Height / 2), _flip, 1f);
         }
 
         public void Update(GameTime gameTime, Player player)
@@ -59,10 +55,33 @@ namespace Final_Project_2026
 
             float dt = (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            Position += velocity * dt;
+            if (!_attacking)
+            {
+                _flip = SpriteEffects.None;
+                Position += velocity * dt;
+            }
 
             DrawRect = new Rectangle((int)Position.X, (int)Position.Y, 50, 50);
-            Debug.WriteLine(Position);
+
+            if (DrawRect.Intersects(player.Hitbox))
+            {
+                Position += -velocity * dt;
+                _attacking = true;
+            }
+
+            if (_attacking)
+            {
+                _attackSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                _flip = SpriteEffects.FlipHorizontally;
+                
+                if (_attackSeconds >= 1)
+                {
+                    _attacking = false;
+                }
+            }
+
+
+
         }
 
     }

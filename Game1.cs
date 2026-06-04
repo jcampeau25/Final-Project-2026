@@ -44,10 +44,12 @@ namespace Final_Project_2026
         List<Rectangle>wallsL1R2;
         List<Rectangle> wallsL1R3;
 
+        List<Rectangle> healthBoosts;
+
         List<Workbench> workbenches;
 
         Texture2D playerTexture, shooterGuardTexture, meleeGuardTexture, bulletTexture, crosshairTexture,
-                  ammoTexture, healthBarTexture, wallTexture, workbenchTexture;
+                  ammoTexture, healthBarTexture, wallTexture, workbenchTexture, healthBoostTesture;
 
         Texture2D titleTexture, upgradesTexture;
 
@@ -64,7 +66,7 @@ namespace Final_Project_2026
 
         Rectangle playRect, levelRect;
 
-
+        
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -88,7 +90,8 @@ namespace Final_Project_2026
             wallsL1R2 = new List<Rectangle>();
             wallsL1R3 = new List<Rectangle>();
 
-            //wallsL1R1.Add();
+            healthBoosts = new List<Rectangle>();
+            
 
             workbenches = new List<Workbench>();
 
@@ -116,6 +119,7 @@ namespace Final_Project_2026
             wallsL1R3.Add(new Rectangle(980, 0, 20, 800));
             wallsL1R3.Add(new Rectangle(0, 0, 20, 800));
 
+            healthBoosts.Add(new Rectangle(400, 350, 60, 60));
 
             window = new Rectangle(0, 0, 1000, 800);
 
@@ -149,6 +153,7 @@ namespace Final_Project_2026
             healthBarTexture = Content.Load<Texture2D>("Images/rectangle");
             wallTexture = Content.Load<Texture2D>("Images/brick wall");
             workbenchTexture = Content.Load<Texture2D>("Images/workbench");
+            
 
             ammoFont = Content.Load<SpriteFont>("Fonts/ammoFont");
             reloadingFont = Content.Load<SpriteFont>("Fonts/reloadingFont");
@@ -208,7 +213,10 @@ namespace Final_Project_2026
 
             // TODO: Add your update logic here
 
-            player.Update(keyboardState, mouseState, prevMouseState, gameTime);
+            if (screen != Screen.Title && screen != Screen.Workbench)
+            { 
+                player.Update(keyboardState, mouseState, prevMouseState, gameTime);
+            }
 
             if (screen == Screen.Title)
             {
