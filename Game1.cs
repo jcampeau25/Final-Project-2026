@@ -49,7 +49,7 @@ namespace Final_Project_2026
         List<Workbench> workbenches;
 
         Texture2D playerTexture, shooterGuardTexture, meleeGuardTexture, bulletTexture, crosshairTexture,
-                  ammoTexture, healthBarTexture, wallTexture, workbenchTexture, healthBoostTesture;
+                  ammoTexture, healthBarTexture, wallTexture, workbenchTexture, healthBoostTexture;
 
         Texture2D titleTexture, upgradesTexture;
 
@@ -98,7 +98,7 @@ namespace Final_Project_2026
             player = new Player(new Rectangle(50, 50, 43, 43), new Vector2(50, 50), playerTexture, Color.White, bulletTexture, 100);
 
             shooterL1R2.Add(new ShooterGuard(new Rectangle(500, 500, 50, 50), new Vector2(500, 500), shooterGuardTexture, Color.White, bulletTexture, 25));
-            meleeL1R2.Add(new MeleeGuard(new Rectangle(600, 200, 50, 50), new Vector2(600, 200), new Vector2(5, 5), meleeGuardTexture, 25, 200, 1000));
+            meleeL1R2.Add(new MeleeGuard(new Rectangle(600, 200, 50, 50), new Vector2(600, 200), new Vector2(5, 5), meleeGuardTexture, 25, 200, 10));
 
             wallsL1R1.Add(new Rectangle(0, 0, 1000, 20));
             wallsL1R1.Add(new Rectangle(0, 780, 1000, 20));
@@ -153,7 +153,7 @@ namespace Final_Project_2026
             healthBarTexture = Content.Load<Texture2D>("Images/rectangle");
             wallTexture = Content.Load<Texture2D>("Images/brick wall");
             workbenchTexture = Content.Load<Texture2D>("Images/workbench");
-            
+            healthBoostTexture = Content.Load<Texture2D>("Images/healthboost");
 
             ammoFont = Content.Load<SpriteFont>("Fonts/ammoFont");
             reloadingFont = Content.Load<SpriteFont>("Fonts/reloadingFont");
@@ -288,7 +288,11 @@ namespace Final_Project_2026
                         Level1Room = Level1Room.Room3;
                         player.DrawRect = new Rectangle(player.DrawRect.X, 750, player.DrawRect.Width, player.DrawRect.Height);
                     }
+
+                    
                 }
+
+              
 
 
                 foreach (MeleeGuard meleeGuard in meleeL1R2)
@@ -308,17 +312,37 @@ namespace Final_Project_2026
                     }
                 }
 
+
+                for (int i = 0; i < meleeL1R2.Count; i++)
+                {
+                    if (meleeL1R2[i].Health <= 0)
+                    {
+                        score += 10;
+                        meleeL1R2.Remove(meleeL1R2[i]);
+                    }
+                }
+
                 for (int i = 0; i < shooterL1R2.Count; i++)
                 {
+                    if (shooterL1R2[i].Health <= 0)
+                    {
+                        shooterL1R2[i].ClearBullets();
+                        shooterL1R2.Remove(shooterL1R2[i]);
+                        score += 10;
+                        i--;
+                    }
+
                     for (int j = 0; j < shooterL1R2[i].Bullets.Count; j++)
                     {
                         if (shooterL1R2[i].Bullets[j].Hitbox.Intersects(player.DrawRect))
                         {
                             player.Health -= 20;
-
                             shooterL1R2[i].Bullets.Remove(shooterL1R2[i].Bullets[j]);
+                            j--;
                         }
                     }
+
+                    
                 }
             }
 
@@ -338,11 +362,17 @@ namespace Final_Project_2026
                     player.DrawRect = new Rectangle(player.DrawRect.X, 0, player.DrawRect.Width, player.DrawRect.Height);
                 }
 
+                if (player.DrawRect.Intersects(healthBoosts[0]))
+                {
+                    player.Health = player.MaxHealth;
+                    healthBoosts.Remove(healthBoosts[0]);
+                }
+
             }
 
 
             foreach (Workbench workbench in workbenches)
-           {
+            {
                 if (player.Hitbox.Intersects(workbench.Location))
                 {
                     if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
@@ -350,7 +380,7 @@ namespace Final_Project_2026
                         screen = Screen.Workbench;
                     }
                 }
-           }
+            }
 
 
 
@@ -469,6 +499,10 @@ namespace Final_Project_2026
                 }
 
                 workbenches[0].Draw(_spriteBatch);
+
+                _spriteBatch.Draw(healthBoostTexture, healthBoosts[0], Color.White);
+
+
             }
 
             if (screen == Screen.Workbench)

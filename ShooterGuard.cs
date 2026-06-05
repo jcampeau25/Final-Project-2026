@@ -81,5 +81,10 @@ namespace Final_Project_2026
 
         }
 
+        public void ClearBullets()
+        {
+            Bullets.Clear();
+        }
+
     }
 }

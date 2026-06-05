@@ -20,6 +20,7 @@ namespace Final_Project_2026
         private float _attackSeconds;
         private SpriteEffects _flip;
 
+
         public MeleeGuard(Rectangle hitbox, Vector2 position, Vector2 direction, Texture2D texture, int maxHealth, float speed, int damage)
         {
             Hitbox = hitbox;
@@ -63,20 +64,24 @@ namespace Final_Project_2026
 
             DrawRect = new Rectangle((int)Position.X, (int)Position.Y, 50, 50);
 
-            if (DrawRect.Intersects(player.Hitbox))
+            if (DrawRect.Intersects(player.Hitbox) && !_attacking)
             {
-                Position += -velocity * dt;
+                //Position += -velocity * dt;
                 _attacking = true;
+                player.Health -= Damage;
+                _flip = SpriteEffects.FlipHorizontally;
+                _attackSeconds = 0;
+
             }
 
             if (_attacking)
             {
                 _attackSeconds += (float)gameTime.ElapsedGameTime.TotalSeconds;
-                _flip = SpriteEffects.FlipHorizontally;
                 
                 if (_attackSeconds >= 1)
-                {
+                {               
                     _attacking = false;
+                    
                 }
             }
 
