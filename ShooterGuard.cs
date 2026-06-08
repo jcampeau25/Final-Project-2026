@@ -53,7 +53,7 @@ namespace Final_Project_2026
 
         }
 
-        public void Update(GameTime gameTime, Player player)
+        public void Update(GameTime gameTime, Player player, Rectangle window)
         {
 
 
@@ -74,9 +74,14 @@ namespace Final_Project_2026
                 _shootTimer = 0;
             }
 
-            foreach (Bullet bullet in Bullets)
+            for (int i = 0; i < Bullets.Count; i ++)
             {
-                bullet.Update(gameTime);
+                Bullets[i].Update(gameTime);
+
+                if (Bullets[i].Hitbox.Right < 0 || Bullets[i].Hitbox.Left > window.Right || Bullets[i].Hitbox.Top > window.Bottom || Bullets[i].Hitbox.Bottom < window.Top)
+                {
+                    Bullets.Remove(Bullets[i]);
+                }
             }
 
         }

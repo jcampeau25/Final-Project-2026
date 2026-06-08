@@ -57,7 +57,7 @@ namespace Final_Project_2026
             
         }
 
-        public void Update(KeyboardState keyboardState, MouseState mouseState, MouseState prevMouseState, GameTime gameTime)
+        public void Update(KeyboardState keyboardState, MouseState mouseState, MouseState prevMouseState, GameTime gameTime, Rectangle window)
         {
             Speed = Vector2.Zero;
 
@@ -106,18 +106,22 @@ namespace Final_Project_2026
 
                 direction.Normalize();
 
-
                 Bullets.Add(new Bullet(DrawRect.Center.ToVector2(), _bulletTexture, direction, Color.Gray, 700));
                 Ammo += -1;
                
             }
 
-            foreach (Bullet bullet in Bullets)
+            for (int i = 0; i < Bullets.Count; i++)
             {
-                bullet.Update(gameTime);
+                Bullets[i].Update(gameTime);
+
+                //if (Bullets[i].Hitbox.Right < 0 || Bullets[i].Hitbox.Left > window.Right || Bullets[i].Hitbox.Top > window.Bottom || Bullets[i].Hitbox.Bottom > window.Top)
+                //{
+                //    Bullets.Remove(Bullets[i]);
+                //}
             }
 
-            
+
             DrawRect.Offset(Speed);
             UpdateHitbox();
 

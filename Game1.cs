@@ -44,7 +44,6 @@ namespace Final_Project_2026
         List<Rectangle>wallsL1R2;
         List<Rectangle> wallsL1R3;
 
-        List<Rectangle> healthBoosts;
 
         List<Workbench> workbenches;
 
@@ -63,6 +62,7 @@ namespace Final_Project_2026
         
 
         Rectangle window, damageRect, capacityRect, healthRect, exitRect;
+        Rectangle healthBoostL1R3;
 
         Rectangle playRect, levelRect;
 
@@ -89,8 +89,6 @@ namespace Final_Project_2026
             wallsL1R1 = new List<Rectangle>();
             wallsL1R2 = new List<Rectangle>();
             wallsL1R3 = new List<Rectangle>();
-
-            healthBoosts = new List<Rectangle>();
             
 
             workbenches = new List<Workbench>();
@@ -98,7 +96,7 @@ namespace Final_Project_2026
             player = new Player(new Rectangle(50, 50, 43, 43), new Vector2(50, 50), playerTexture, Color.White, bulletTexture, 100);
 
             shooterL1R2.Add(new ShooterGuard(new Rectangle(500, 500, 50, 50), new Vector2(500, 500), shooterGuardTexture, Color.White, bulletTexture, 25));
-            meleeL1R2.Add(new MeleeGuard(new Rectangle(600, 200, 50, 50), new Vector2(600, 200), new Vector2(5, 5), meleeGuardTexture, 25, 200, 10));
+            meleeL1R2.Add(new MeleeGuard(new Rectangle(600, 200, 50, 50), new Vector2(600, 200), new Vector2(5, 5), meleeGuardTexture, 25, 200, 25));
 
             wallsL1R1.Add(new Rectangle(0, 0, 1000, 20));
             wallsL1R1.Add(new Rectangle(0, 780, 1000, 20));
@@ -119,7 +117,7 @@ namespace Final_Project_2026
             wallsL1R3.Add(new Rectangle(980, 0, 20, 800));
             wallsL1R3.Add(new Rectangle(0, 0, 20, 800));
 
-            healthBoosts.Add(new Rectangle(400, 350, 60, 60));
+            healthBoostL1R3 = new Rectangle(400, 350, 60, 60);
 
             window = new Rectangle(0, 0, 1000, 800);
 
@@ -215,7 +213,7 @@ namespace Final_Project_2026
 
             if (screen != Screen.Title && screen != Screen.Workbench)
             { 
-                player.Update(keyboardState, mouseState, prevMouseState, gameTime);
+                player.Update(keyboardState, mouseState, prevMouseState, gameTime, window);
             }
 
             if (screen == Screen.Title)
@@ -261,9 +259,21 @@ namespace Final_Project_2026
                     }
                 }
 
+                if (player.DrawRect.Right <= 0)
+                {
+                    Level1Room = Level1Room.Room1;
+                    player.DrawRect = new Rectangle(950, player.DrawRect.Y, player.DrawRect.Width, player.DrawRect.Height);
+                }
+
+                if (player.DrawRect.Bottom <= 0)
+                {
+                    Level1Room = Level1Room.Room3;
+                    player.DrawRect = new Rectangle(player.DrawRect.X, 750, player.DrawRect.Width, player.DrawRect.Height);
+                }
+
                 foreach (ShooterGuard shooterGuard in shooterL1R2)
                 {
-                    shooterGuard.Update(gameTime, player);
+                    shooterGuard.Update(gameTime, player, window);
 
                     for (int i = 0; i < player.Bullets.Count; i++)
                     {
@@ -277,17 +287,6 @@ namespace Final_Project_2026
 
                     }
 
-                    if (player.DrawRect.Right <= 0)
-                    {
-                        Level1Room = Level1Room.Room1;
-                        player.DrawRect = new Rectangle(950, player.DrawRect.Y, player.DrawRect.Width, player.DrawRect.Height);
-                    }
-
-                    if (player.DrawRect.Bottom <= 0)
-                    {
-                        Level1Room = Level1Room.Room3;
-                        player.DrawRect = new Rectangle(player.DrawRect.X, 750, player.DrawRect.Width, player.DrawRect.Height);
-                    }
 
                     
                 }
@@ -319,18 +318,12 @@ namespace Final_Project_2026
                     {
                         score += 10;
                         meleeL1R2.Remove(meleeL1R2[i]);
+                        i--;
                     }
                 }
 
                 for (int i = 0; i < shooterL1R2.Count; i++)
                 {
-                    if (shooterL1R2[i].Health <= 0)
-                    {
-                        shooterL1R2[i].ClearBullets();
-                        shooterL1R2.Remove(shooterL1R2[i]);
-                        score += 10;
-                        i--;
-                    }
 
                     for (int j = 0; j < shooterL1R2[i].Bullets.Count; j++)
                     {
@@ -342,7 +335,19 @@ namespace Final_Project_2026
                         }
                     }
 
+                    if (shooterL1R2[i].Health <= 0)
+                    {
+                        shooterL1R2[i].ClearBullets();
+                        shooterL1R2.Remove(shooterL1R2[i]);
+                        score += 10;
+                        i--;
+
+                    }
+
+                   
+
                     
+
                 }
             }
 
@@ -362,10 +367,9 @@ namespace Final_Project_2026
                     player.DrawRect = new Rectangle(player.DrawRect.X, 0, player.DrawRect.Width, player.DrawRect.Height);
                 }
 
-                if (player.DrawRect.Intersects(healthBoosts[0]))
+                if (player.DrawRect.Intersects(healthBoostL1R3))
                 {
                     player.Health = player.MaxHealth;
-                    healthBoosts.Remove(healthBoosts[0]);
                 }
 
             }
@@ -392,17 +396,30 @@ namespace Final_Project_2026
                 {
                     if (damageRect.Contains(mouseState.Position))
                     {
-                        player.Damage += 1;
+                        if (score >= 20 && player.Damage < 10)
+                        {
+                            player.Damage += 1;
+                            score -= 20;
+                        }
                     }
 
                     if (capacityRect.Contains(mouseState.Position))
                     {
-                        player.MaxAmmo += 5;
+                        if (score >= 20 && player.MaxAmmo < 35)
+                        {
+                            player.MaxAmmo += 5;
+                            score -= 20;
+                        }
                     }
 
                     if (healthRect.Contains(mouseState.Position))
                     {
-                        player.MaxHealth += 25;
+                        if (score >= 20 && player.MaxHealth < 200)
+                        {
+                            player.MaxHealth += 20;
+                            player.Health += 20;
+                            score -= 20;
+                        }
                     }
 
                     if (exitRect.Contains(mouseState.Position))
@@ -500,7 +517,7 @@ namespace Final_Project_2026
 
                 workbenches[0].Draw(_spriteBatch);
 
-                _spriteBatch.Draw(healthBoostTexture, healthBoosts[0], Color.White);
+                _spriteBatch.Draw(healthBoostTexture, healthBoostL1R3, Color.White);
 
 
             }
@@ -510,13 +527,39 @@ namespace Final_Project_2026
 
 
                 _spriteBatch.Draw(upgradesTexture, window, Color.White);
-                _spriteBatch.DrawString(upgradeFont, $"{player.Damage} => {player.Damage + 1}", new Vector2(135, 480), Color.Black);
-                _spriteBatch.DrawString(upgradeFont, $"{player.MaxAmmo} => {player.MaxAmmo + 5}", new Vector2(430, 480), Color.Black);
-                _spriteBatch.DrawString(upgradeFont, $"{player.MaxHealth} => {player.MaxHealth + 25}", new Vector2(705, 480), Color.Black);
-                _spriteBatch.DrawString(upgradeFont, $"COST: 20", new Vector2(135, 550), Color.Black);
-                _spriteBatch.DrawString(upgradeFont, $"COST: 20", new Vector2(430, 550), Color.Black);
-                _spriteBatch.DrawString(upgradeFont, $"COST: 20", new Vector2(730, 550), Color.Black);
 
+                if (player.Damage < 10)
+                {
+                    _spriteBatch.DrawString(upgradeFont, $"COST: 20", new Vector2(135, 550), Color.Black);
+                    _spriteBatch.DrawString(upgradeFont, $"{player.Damage} => {player.Damage + 1}", new Vector2(135, 480), Color.Black);
+                }
+                else
+                {
+                    _spriteBatch.DrawString(upgradeFont, $"MAXED", new Vector2(140, 480), Color.Black);
+                }
+
+                if (player.MaxAmmo < 35)
+                {
+                    _spriteBatch.DrawString(upgradeFont, $"COST: 20", new Vector2(430, 550), Color.Black);
+                    _spriteBatch.DrawString(upgradeFont, $"{player.MaxAmmo} => {player.MaxAmmo + 5}", new Vector2(430, 480), Color.Black);
+                }
+                else
+                {
+                    _spriteBatch.DrawString(upgradeFont, $"MAXED", new Vector2(435, 480), Color.Black);
+                }
+
+                if (player.MaxHealth < 200)
+                {
+                    _spriteBatch.DrawString(upgradeFont, $"COST: 20", new Vector2(740, 550), Color.Black);
+                    _spriteBatch.DrawString(upgradeFont, $"{player.MaxHealth} => {player.MaxHealth + 25}", new Vector2(705, 480), Color.Black);
+                }
+                else
+                {
+                    _spriteBatch.DrawString(upgradeFont, $"MAXED", new Vector2(740, 480), Color.Black);
+                }
+
+
+                
                 _spriteBatch.DrawString(upgradeFont, $"POINTS: {score}", new Vector2(25, 25), Color.Black);
                 _spriteBatch.Draw(healthBarTexture, exitRect, Color.Black);
                 _spriteBatch.DrawString(upgradeFont, $"X", new Vector2(955, 10), Color.White);
@@ -541,8 +584,6 @@ namespace Final_Project_2026
                 }
 
                 _spriteBatch.DrawString(reloadingFont, $"Points: {score}", new Vector2(40, 40), Color.Black);
-
-
                 _spriteBatch.Draw(crosshairTexture, mouseState.Position.ToVector2(), null, Color.White, 0, new Vector2(crosshairTexture.Width / 2, crosshairTexture.Height / 2), 0.6f, SpriteEffects.None, 0f);
 
 

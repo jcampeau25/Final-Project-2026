@@ -45,6 +45,7 @@ namespace Final_Project_2026
 
             _position += _velocity * dt;
             Hitbox = new Rectangle((int)_position.X, (int)_position.Y, _width, _height);
+
         }
 
     }
