@@ -21,9 +21,9 @@ namespace Final_Project_2026
         public Vector2 Direction;
         public int Health, MaxHealth;
         private float _shootTimer;
-        private int _fireRate;
+        private double _fireRate;
         public List<Bullet> Bullets;
-
+        private Random _generator;
 
         public ShooterGuard(Rectangle hitbox, Vector2 position, Texture2D texture, Color color, Texture2D bulletTexture, int maxHealth)
         {
@@ -38,7 +38,8 @@ namespace Final_Project_2026
             Bullets = new List<Bullet>();
             _bulletTexture = bulletTexture;
             _shootTimer = 0;
-            _fireRate = 1;
+            _generator = new Random();
+            _fireRate = _generator.NextDouble();
         }
 
 
