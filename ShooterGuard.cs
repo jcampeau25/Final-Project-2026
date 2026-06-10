@@ -39,7 +39,7 @@ namespace Final_Project_2026
             _bulletTexture = bulletTexture;
             _shootTimer = 0;
             _generator = new Random();
-            _fireRate = _generator.NextDouble();
+            _fireRate = _generator.NextDouble() + 1;
         }
 
 

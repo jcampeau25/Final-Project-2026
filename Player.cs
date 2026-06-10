@@ -136,5 +136,10 @@ namespace Final_Project_2026
             Hitbox.X = DrawRect.X + 12;
             Hitbox.Y = DrawRect.Y + 12;
         }
+
+        public void ClearBullets()
+        {
+            Bullets.Clear();
+        }
     }
 }

@@ -11,13 +11,11 @@ namespace Final_Project_2026
     enum Screen
     {
         Title,
-        Level1,
-        Level2,
-        Level3,
+        Game,
         Workbench
     }
 
-    enum Level1Room
+    enum Room
     { 
         Room1,
         Room2,
@@ -40,7 +38,6 @@ namespace Final_Project_2026
         Player player;
 
         List<ShooterGuard> shooterL1R2;
-        List<MeleeGuard> meleeL1R2;
 
         List<ShooterGuard> shooterL1R4;
 
@@ -61,13 +58,16 @@ namespace Final_Project_2026
 
         int score = 0;
 
+        int upgradeCost = 10;
+
         Screen screen;
 
-        Level1Room Level1Room;
+        Room Level1Room;
         
 
         Rectangle window, damageRect, capacityRect, healthRect, exitRect;
-        Rectangle healthBoostL1R3;
+
+        Rectangle healthBoostL1R3, healthBoostL1R5;
 
         Rectangle playRect, levelRect;
 
@@ -90,7 +90,6 @@ namespace Final_Project_2026
             screen = Screen.Title;
 
             shooterL1R2 = new List<ShooterGuard>();
-            meleeL1R2 = new List<MeleeGuard>();
 
             shooterL1R4 = new List<ShooterGuard>();
 
@@ -104,7 +103,7 @@ namespace Final_Project_2026
             player = new Player(new Rectangle(50, 50, 43, 43), new Vector2(50, 50), playerTexture, Color.White, bulletTexture, 100);
 
             shooterL1R2.Add(new ShooterGuard(new Rectangle(500, 500, 50, 50), new Vector2(500, 500), shooterGuardTexture, Color.White, bulletTexture, 25));
-            meleeL1R2.Add(new MeleeGuard(new Rectangle(600, 200, 50, 50), new Vector2(600, 200), new Vector2(5, 5), meleeGuardTexture, 25, 200, 25));
+            shooterL1R2.Add(new ShooterGuard(new Rectangle(200, 50, 50, 50), new Vector2(200, 50), shooterGuardTexture, Color.White, bulletTexture, 25));
 
             shooterL1R4.Add(new ShooterGuard(new Rectangle(100, 60, 50, 50), new Vector2(100, 60), shooterGuardTexture, Color.White, bulletTexture, 25));
             shooterL1R4.Add(new ShooterGuard(new Rectangle(600, 700, 50, 50), new Vector2(600, 700), shooterGuardTexture, Color.White, bulletTexture, 25));
@@ -196,7 +195,7 @@ namespace Final_Project_2026
 
             this.Window.Title = $"x = {mouseState.X}, y = {mouseState.Y}";
 
-            if (screen == Screen.Level1)
+            if (screen == Screen.Game)
             {
                 IsMouseVisible = false;
             }
@@ -245,13 +244,13 @@ namespace Final_Project_2026
                 {
                     if (playRect.Contains(mouseState.Position))
                     {
-                        screen = Screen.Level1;
-                        Level1Room = Level1Room.Room1;
+                        screen = Screen.Game;
+                        Level1Room = Room.Room1;
                     }
                 }
             }
 
-            if (screen == Screen.Level1 && Level1Room == Level1Room.Room1)
+            if (screen == Screen.Game && Level1Room == Room.Room1)
             {
                 foreach (Rectangle wall in wallsL1R1)
                 {
@@ -263,8 +262,10 @@ namespace Final_Project_2026
 
                 if (player.DrawRect.Left >= 1000)
                 {
-                    Level1Room = Level1Room.Room2;
+                    Level1Room = Room.Room2;
                     player.DrawRect = new Rectangle(0, player.DrawRect.Y, player.DrawRect.Width, player.DrawRect.Height);
+                    player.ClearBullets();
+
                 }
 
             }
@@ -272,7 +273,7 @@ namespace Final_Project_2026
             
 
 
-            if (screen == Screen.Level1 && Level1Room == Level1Room.Room2)
+            if (screen == Screen.Game && Level1Room == Room.Room2)
             {
                 foreach (Rectangle wall in wallsL1R2)
                 {
@@ -284,14 +285,18 @@ namespace Final_Project_2026
 
                 if (player.DrawRect.Right <= 0)
                 {
-                    Level1Room = Level1Room.Room1;
+                    Level1Room = Room.Room1;
                     player.DrawRect = new Rectangle(950, player.DrawRect.Y, player.DrawRect.Width, player.DrawRect.Height);
+                    player.ClearBullets();
+
                 }
 
                 if (player.DrawRect.Bottom <= 0)
                 {
-                    Level1Room = Level1Room.Room3;
+                    Level1Room = Room.Room3;
                     player.DrawRect = new Rectangle(player.DrawRect.X, 750, player.DrawRect.Width, player.DrawRect.Height);
+                    player.ClearBullets();
+
                 }
 
                 foreach (ShooterGuard shooterGuard in shooterL1R2)
@@ -317,33 +322,33 @@ namespace Final_Project_2026
               
 
 
-                foreach (MeleeGuard meleeGuard in meleeL1R2)
-                {
-                    meleeGuard.Update(gameTime, player);
+                //foreach (MeleeGuard meleeGuard in meleeL1R2)
+                //{
+                //    meleeGuard.Update(gameTime, player);
 
-                    for (int i = 0; i < player.Bullets.Count; i++)
-                    {
+                //    for (int i = 0; i < player.Bullets.Count; i++)
+                //    {
 
-                        if (player.Bullets[i].Hitbox.Intersects(meleeGuard.DrawRect))
-                        {
-                            meleeGuard.Health -= player.Damage;
+                //        if (player.Bullets[i].Hitbox.Intersects(meleeGuard.DrawRect))
+                //        {
+                //            meleeGuard.Health -= player.Damage;
 
-                            player.Bullets.Remove(player.Bullets[i]);
-                        }
+                //            player.Bullets.Remove(player.Bullets[i]);
+                //        }
 
-                    }
-                }
+                //    }
+                //}
 
 
-                for (int i = 0; i < meleeL1R2.Count; i++)
-                {
-                    if (meleeL1R2[i].Health <= 0)
-                    {
-                        score += 10;
-                        meleeL1R2.Remove(meleeL1R2[i]);
-                        i--;
-                    }
-                }
+                //for (int i = 0; i < meleeL1R2.Count; i++)
+                //{
+                //    if (meleeL1R2[i].Health <= 0)
+                //    {
+                //        score += 10;
+                //        meleeL1R2.Remove(meleeL1R2[i]);
+                //        i--;
+                //    }
+                //}
 
                 for (int i = 0; i < shooterL1R2.Count; i++)
                 {
@@ -374,7 +379,7 @@ namespace Final_Project_2026
                 }
             }
 
-            if (screen == Screen.Level1 && Level1Room == Level1Room.Room3)
+            if (screen == Screen.Game && Level1Room == Room.Room3)
             {
                 foreach (Rectangle wall in wallsL1R3)
                 {
@@ -386,14 +391,16 @@ namespace Final_Project_2026
 
                 if (player.DrawRect.Top >= 800)
                 {
-                    Level1Room = Level1Room.Room2;
+                    Level1Room = Room.Room2;
                     player.DrawRect = new Rectangle(player.DrawRect.X, 0, player.DrawRect.Width, player.DrawRect.Height);
+                    player.ClearBullets();
                 }
 
                 if (player.DrawRect.Left >= 1000)
                 {
-                    Level1Room = Level1Room.Room4;
+                    Level1Room = Room.Room4;
                     player.DrawRect = new Rectangle(0, player.DrawRect.Y, player.DrawRect.Width, player.DrawRect.Height);
+                    player.ClearBullets();
                 }
 
                 if (player.DrawRect.Intersects(healthBoostL1R3))
@@ -417,7 +424,7 @@ namespace Final_Project_2026
             }
 
 
-            if (screen == Screen.Level1 && Level1Room == Level1Room.Room4)
+            if (screen == Screen.Game && Level1Room == Room.Room4)
             {
                 foreach (Rectangle wall in wallsL1R4)
                 {
@@ -429,8 +436,9 @@ namespace Final_Project_2026
 
                 if (player.DrawRect.Right <= 0)
                 {
-                    Level1Room = Level1Room.Room3;
+                    Level1Room = Room.Room3;
                     player.DrawRect = new Rectangle(950, player.DrawRect.Y, player.DrawRect.Width, player.DrawRect.Height);
+                    player.ClearBullets();
                 }
 
                 //if (player.DrawRect.Bottom <= 0)
@@ -498,7 +506,12 @@ namespace Final_Project_2026
                         if (score >= 20 && player.Damage < 10)
                         {
                             player.Damage += 1;
-                            score -= 20;
+                            score -= upgradeCost;
+
+                            if (upgradeCost <= 50)
+                            {
+                                upgradeCost += 5;
+                            }
                         }
                     }
 
@@ -507,7 +520,14 @@ namespace Final_Project_2026
                         if (score >= 20 && player.MaxAmmo < 35)
                         {
                             player.MaxAmmo += 5;
-                            score -= 20;
+                            player.Ammo = player.MaxAmmo;
+
+                            score -= upgradeCost;
+
+                            if (upgradeCost <= 50)
+                            {
+                                upgradeCost += 5;
+                            }
                         }
                     }
 
@@ -517,13 +537,18 @@ namespace Final_Project_2026
                         {
                             player.MaxHealth += 20;
                             player.Health += 20;
-                            score -= 20;
+                            score -= upgradeCost;
+
+                            if (upgradeCost <= 50)
+                            {
+                                upgradeCost += 5;
+                            }
                         }
                     }
 
                     if (exitRect.Contains(mouseState.Position))
                     {
-                        screen = Screen.Level1;
+                        screen = Screen.Game;
                     }
                 }
             }
@@ -546,21 +571,23 @@ namespace Final_Project_2026
             
             }
 
-            if (screen == Screen.Level1 && Level1Room == Level1Room.Room1)
+            if (screen == Screen.Game && Level1Room == Room.Room1)
             {
                 foreach (Rectangle wall in wallsL1R1)
                 {
                     _spriteBatch.Draw(wallTexture, wall, Color.White);
                 }
 
+                _spriteBatch.DrawString(infoFont, "Left Click to shoot, R to reload", new Vector2(200, 600), Color.Black);
+
+
                 _spriteBatch.DrawString(infoFont, "WASD to move", new Vector2(300, 50), Color.Black);
             }
 
 
 
-            if (screen == Screen.Level1 && Level1Room == Level1Room.Room2)
+            if (screen == Screen.Game && Level1Room == Room.Room2)
             {
-                _spriteBatch.DrawString(infoFont, "Left Click to shoot guards", new Vector2(100, 600), Color.Black);
 
                 foreach (Rectangle wall in wallsL1R2)
                 {
@@ -569,16 +596,12 @@ namespace Final_Project_2026
 
 
 
-                foreach (ShooterGuard shooterGuard1 in shooterL1R2)
+                foreach (ShooterGuard shooterGuard in shooterL1R2)
                 {
-                    shooterGuard1.Draw(_spriteBatch);
+                    shooterGuard.Draw(_spriteBatch);
                 }
 
-                foreach (MeleeGuard meleeGuard in meleeL1R2)
-                {
-                    meleeGuard.Draw(_spriteBatch);
-                }
-
+                
 
                 //_spriteBatch.Draw(healthBarTexture, level1ShooterGuards[0].Hitbox, Color.Red * 0.2f);
                 //_spriteBatch.Draw(healthBarTexture, level1ShooterGuards[0].DrawRect, Color.Red * 0.2f);
@@ -588,23 +611,18 @@ namespace Final_Project_2026
 
                 for (int i = 0; i < shooterL1R2.Count; i++)
                 {
-                    _spriteBatch.Draw(healthBarTexture, new Rectangle(shooterL1R2[i].DrawRect.Left - 3, shooterL1R2[0].DrawRect.Top - 10, shooterL1R2[0].MaxHealth * 2, 4), Color.Gray);
-                    _spriteBatch.Draw(healthBarTexture, new Rectangle(shooterL1R2[i].DrawRect.Left - 3, shooterL1R2[0].DrawRect.Top - 10, shooterL1R2[0].Health * 2, 4), Color.Lime);
+                    _spriteBatch.Draw(healthBarTexture, new Rectangle(shooterL1R2[i].DrawRect.Left - 3, shooterL1R2[i].DrawRect.Top - 10, shooterL1R2[i].MaxHealth * 2, 4), Color.Gray);
+                    _spriteBatch.Draw(healthBarTexture, new Rectangle(shooterL1R2[i].DrawRect.Left - 3, shooterL1R2[i].DrawRect.Top - 10, shooterL1R2[i].Health * 2, 4), Color.Lime);
                 }
 
-                for (int i = 0; i < meleeL1R2.Count; i++)
-                {
-                    _spriteBatch.Draw(healthBarTexture, new Rectangle(meleeL1R2[i].DrawRect.Left - 3, meleeL1R2[0].DrawRect.Top - 10, meleeL1R2[0].MaxHealth * 2, 4), Color.Gray);
-                    _spriteBatch.Draw(healthBarTexture, new Rectangle(meleeL1R2[i].DrawRect.Left - 3, meleeL1R2[0].DrawRect.Top - 10, meleeL1R2[0].Health * 2, 4), Color.Lime);
-                }
-
+           
                 
 
 
 
             }
 
-            if (screen == Screen.Level1 && Level1Room == Level1Room.Room3)
+            if (screen == Screen.Game && Level1Room == Room.Room3)
             {
                 _spriteBatch.DrawString(infoFont, "E to use workbench", new Vector2(400, 50), Color.Black);
 
@@ -621,7 +639,7 @@ namespace Final_Project_2026
 
             }
 
-            if (screen == Screen.Level1 && Level1Room == Level1Room.Room4)
+            if (screen == Screen.Game && Level1Room == Room.Room4)
             {
 
                 foreach (Rectangle wall in wallsL1R4)
@@ -651,7 +669,7 @@ namespace Final_Project_2026
 
                 if (player.Damage < 10)
                 {
-                    _spriteBatch.DrawString(upgradeFont, $"COST: 20", new Vector2(135, 550), Color.Black);
+                    _spriteBatch.DrawString(upgradeFont, $"COST: {upgradeCost}", new Vector2(135, 550), Color.Black);
                     _spriteBatch.DrawString(upgradeFont, $"{player.Damage} => {player.Damage + 1}", new Vector2(135, 480), Color.Black);
                 }
                 else
@@ -661,7 +679,7 @@ namespace Final_Project_2026
 
                 if (player.MaxAmmo < 35)
                 {
-                    _spriteBatch.DrawString(upgradeFont, $"COST: 20", new Vector2(430, 550), Color.Black);
+                    _spriteBatch.DrawString(upgradeFont, $"COST: {upgradeCost}", new Vector2(430, 550), Color.Black);
                     _spriteBatch.DrawString(upgradeFont, $"{player.MaxAmmo} => {player.MaxAmmo + 5}", new Vector2(430, 480), Color.Black);
                 }
                 else
@@ -671,7 +689,7 @@ namespace Final_Project_2026
 
                 if (player.MaxHealth < 200)
                 {
-                    _spriteBatch.DrawString(upgradeFont, $"COST: 20", new Vector2(740, 550), Color.Black);
+                    _spriteBatch.DrawString(upgradeFont, $"COST:  {upgradeCost}", new Vector2(740, 550), Color.Black);
                     _spriteBatch.DrawString(upgradeFont, $"{player.MaxHealth} => {player.MaxHealth + 25}", new Vector2(705, 480), Color.Black);
                 }
                 else
