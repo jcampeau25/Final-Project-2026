@@ -20,7 +20,8 @@ namespace Final_Project_2026
         Room1,
         Room2,
         Room3,
-        Room4
+        Room4,
+        Room5
     }
 
     
@@ -46,6 +47,7 @@ namespace Final_Project_2026
         List<Rectangle>wallsL1R2;
         List<Rectangle> wallsL1R3;
         List<Rectangle> wallsL1R4;
+        List<Rectangle> wallsL1R5;
 
         List<Workbench> workbenches;
 
@@ -62,7 +64,7 @@ namespace Final_Project_2026
 
         Screen screen;
 
-        Room Level1Room;
+        Room room;
         
 
         Rectangle window, damageRect, capacityRect, healthRect, exitRect;
@@ -97,6 +99,7 @@ namespace Final_Project_2026
             wallsL1R2 = new List<Rectangle>();
             wallsL1R3 = new List<Rectangle>();
             wallsL1R4 = new List<Rectangle>();
+            wallsL1R5 = new List<Rectangle>();
 
             workbenches = new List<Workbench>();
 
@@ -138,6 +141,14 @@ namespace Final_Project_2026
             wallsL1R4.Add(new Rectangle(980, 0, 20, 800));
             wallsL1R4.Add(new Rectangle(0, 0, 20, 300));
             wallsL1R4.Add(new Rectangle(0, 500, 20, 300));
+
+            wallsL1R5.Add(new Rectangle(0, 0, 1000, 20));
+            wallsL1R5.Add(new Rectangle(0, 0, 20, 300));
+            wallsL1R5.Add(new Rectangle(0, 500, 20, 300));
+            wallsL1R5.Add(new Rectangle(980, 0, 20, 300));
+            wallsL1R5.Add(new Rectangle(980, 500, 20, 300));
+            wallsL1R5.Add(new Rectangle(0, 780, 400, 20));
+            wallsL1R5.Add(new Rectangle(600, 780, 400, 20));
 
             healthBoostL1R3 = new Rectangle(400, 350, 60, 60);
 
@@ -245,12 +256,12 @@ namespace Final_Project_2026
                     if (playRect.Contains(mouseState.Position))
                     {
                         screen = Screen.Game;
-                        Level1Room = Room.Room1;
+                        room = Room.Room1;
                     }
                 }
             }
 
-            if (screen == Screen.Game && Level1Room == Room.Room1)
+            if (screen == Screen.Game && room == Room.Room1)
             {
                 foreach (Rectangle wall in wallsL1R1)
                 {
@@ -262,7 +273,7 @@ namespace Final_Project_2026
 
                 if (player.DrawRect.Left >= 1000)
                 {
-                    Level1Room = Room.Room2;
+                    room = Room.Room2;
                     player.DrawRect = new Rectangle(0, player.DrawRect.Y, player.DrawRect.Width, player.DrawRect.Height);
                     player.ClearBullets();
 
@@ -273,7 +284,7 @@ namespace Final_Project_2026
             
 
 
-            if (screen == Screen.Game && Level1Room == Room.Room2)
+            if (screen == Screen.Game && room == Room.Room2)
             {
                 foreach (Rectangle wall in wallsL1R2)
                 {
@@ -285,7 +296,7 @@ namespace Final_Project_2026
 
                 if (player.DrawRect.Right <= 0)
                 {
-                    Level1Room = Room.Room1;
+                    room = Room.Room1;
                     player.DrawRect = new Rectangle(950, player.DrawRect.Y, player.DrawRect.Width, player.DrawRect.Height);
                     player.ClearBullets();
 
@@ -293,7 +304,7 @@ namespace Final_Project_2026
 
                 if (player.DrawRect.Bottom <= 0)
                 {
-                    Level1Room = Room.Room3;
+                    room = Room.Room3;
                     player.DrawRect = new Rectangle(player.DrawRect.X, 750, player.DrawRect.Width, player.DrawRect.Height);
                     player.ClearBullets();
 
@@ -372,14 +383,10 @@ namespace Final_Project_2026
 
                     }
 
-                   
-
-                    
-
                 }
             }
 
-            if (screen == Screen.Game && Level1Room == Room.Room3)
+            if (screen == Screen.Game && room == Room.Room3)
             {
                 foreach (Rectangle wall in wallsL1R3)
                 {
@@ -391,14 +398,14 @@ namespace Final_Project_2026
 
                 if (player.DrawRect.Top >= 800)
                 {
-                    Level1Room = Room.Room2;
+                    room = Room.Room2;
                     player.DrawRect = new Rectangle(player.DrawRect.X, 0, player.DrawRect.Width, player.DrawRect.Height);
                     player.ClearBullets();
                 }
 
                 if (player.DrawRect.Left >= 1000)
                 {
-                    Level1Room = Room.Room4;
+                    room = Room.Room4;
                     player.DrawRect = new Rectangle(0, player.DrawRect.Y, player.DrawRect.Width, player.DrawRect.Height);
                     player.ClearBullets();
                 }
@@ -424,7 +431,7 @@ namespace Final_Project_2026
             }
 
 
-            if (screen == Screen.Game && Level1Room == Room.Room4)
+            if (screen == Screen.Game && room == Room.Room4)
             {
                 foreach (Rectangle wall in wallsL1R4)
                 {
@@ -436,7 +443,7 @@ namespace Final_Project_2026
 
                 if (player.DrawRect.Right <= 0)
                 {
-                    Level1Room = Room.Room3;
+                    room = Room.Room3;
                     player.DrawRect = new Rectangle(950, player.DrawRect.Y, player.DrawRect.Width, player.DrawRect.Height);
                     player.ClearBullets();
                 }
@@ -489,7 +496,21 @@ namespace Final_Project_2026
 
                     }
 
+                    if (player.DrawRect.Right <= 0)
+                    {
+                        room = Room.Room3;
+                        player.DrawRect = new Rectangle(950, player.DrawRect.Y, player.DrawRect.Width, player.DrawRect.Height);
+                        player.ClearBullets();
 
+                    }
+
+                    if (player.DrawRect.Bottom <= 0)
+                    {
+                        room = Room.Room5;
+                        player.DrawRect = new Rectangle(player.DrawRect.X, 750, player.DrawRect.Width, player.DrawRect.Height);
+                        player.ClearBullets();
+
+                    }
 
 
 
@@ -571,7 +592,7 @@ namespace Final_Project_2026
             
             }
 
-            if (screen == Screen.Game && Level1Room == Room.Room1)
+            if (screen == Screen.Game && room == Room.Room1)
             {
                 foreach (Rectangle wall in wallsL1R1)
                 {
@@ -586,7 +607,7 @@ namespace Final_Project_2026
 
 
 
-            if (screen == Screen.Game && Level1Room == Room.Room2)
+            if (screen == Screen.Game && room == Room.Room2)
             {
 
                 foreach (Rectangle wall in wallsL1R2)
@@ -622,7 +643,7 @@ namespace Final_Project_2026
 
             }
 
-            if (screen == Screen.Game && Level1Room == Room.Room3)
+            if (screen == Screen.Game && room == Room.Room3)
             {
                 _spriteBatch.DrawString(infoFont, "E to use workbench", new Vector2(400, 50), Color.Black);
 
@@ -639,7 +660,7 @@ namespace Final_Project_2026
 
             }
 
-            if (screen == Screen.Game && Level1Room == Room.Room4)
+            if (screen == Screen.Game && room == Room.Room4)
             {
 
                 foreach (Rectangle wall in wallsL1R4)
@@ -656,6 +677,14 @@ namespace Final_Project_2026
                 {
                     _spriteBatch.Draw(healthBarTexture, new Rectangle(shooterL1R4[i].DrawRect.Left - 3, shooterL1R4[i].DrawRect.Top - 10, shooterL1R4[i].MaxHealth * 2, 4), Color.Gray);
                     _spriteBatch.Draw(healthBarTexture, new Rectangle(shooterL1R4[i].DrawRect.Left - 3, shooterL1R4[i].DrawRect.Top - 10, shooterL1R4[i].Health * 2, 4), Color.Lime);
+                }
+
+                if (room == Room.Room5)
+                {
+                    foreach (Rectangle wall in wallsL1R5)
+                    {
+                        _spriteBatch.Draw(wallTexture, wall, Color.White);
+                    }
                 }
 
             }
