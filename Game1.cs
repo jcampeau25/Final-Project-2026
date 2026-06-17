@@ -23,7 +23,8 @@ namespace Final_Project_2026
         Room4,
         Room5,
         Room6,
-        Room7
+        Room7,
+        Room8
     }
 
     
@@ -46,6 +47,9 @@ namespace Final_Project_2026
 
         List<MeleeGuard> meleeL1R5;
 
+        List<ShooterGuard> shooterL1R7;
+        List<MeleeGuard> meleeL1R7;
+
         List<Rectangle> wallsL1R1;
         List<Rectangle>wallsL1R2;
         List<Rectangle> wallsL1R3;
@@ -53,6 +57,9 @@ namespace Final_Project_2026
         List<Rectangle> wallsL1R5;
         List<Rectangle> wallsL1R6;
         List<Rectangle> wallsL1R7;
+        List<Rectangle> wallsL1R8;
+
+
 
         List<Rectangle> doorL1R5;
 
@@ -108,6 +115,9 @@ namespace Final_Project_2026
 
             meleeL1R5 = new List<MeleeGuard>();
 
+            shooterL1R7 = new List<ShooterGuard>();
+            meleeL1R7 = new List<MeleeGuard>();
+
             wallsL1R1 = new List<Rectangle>();
             wallsL1R2 = new List<Rectangle>();
             wallsL1R3 = new List<Rectangle>();
@@ -130,6 +140,11 @@ namespace Final_Project_2026
             shooterL1R4.Add(new ShooterGuard(new Rectangle(800, 200, 50, 50), new Vector2(800, 200), shooterGuardTexture, Color.White, bulletTexture, 25));
             shooterL1R4.Add(new ShooterGuard(new Rectangle(400, 550, 50, 50), new Vector2(400, 550), shooterGuardTexture, Color.White, bulletTexture, 25));
             shooterL1R4.Add(new ShooterGuard(new Rectangle(500, 40, 50, 50), new Vector2(500, 40), shooterGuardTexture, Color.White, bulletTexture, 25));
+
+            meleeL1R5.Add(new MeleeGuard(new Rectangle(475, 50, 50, 50), new Vector2(475, 50), new Vector2(10, 10), meleeGuardTexture, 25, 300, 50));
+
+            shooterL1R7.Add(new ShooterGuard(new Rectangle(50, 50, 50, 50), new Vector2(50, 50), shooterGuardTexture, Color.White, bulletTexture, 35));
+            shooterL1R7.Add(new ShooterGuard(new Rectangle(50, 50, 50, 50), new Vector2(50, 950), shooterGuardTexture, Color.White, bulletTexture, 35));
 
             meleeL1R5.Add(new MeleeGuard(new Rectangle(475, 50, 50, 50), new Vector2(475, 50), new Vector2(10, 10), meleeGuardTexture, 25, 300, 50));
 
@@ -176,11 +191,14 @@ namespace Final_Project_2026
             wallsL1R6.Add(new Rectangle(0, 500, 20, 300));
             wallsL1R6.Add(new Rectangle(980, 0, 20, 800));
 
-            wallsL1R7.Add(new Rectangle(0, 0, 1000, 20));
-            wallsL1R7.Add(new Rectangle(0, 980, 1000, 20));
-            wallsL1R7.Add(new Rectangle(0, 0, 20, 300));
-            wallsL1R7.Add(new Rectangle(0, 500, 20, 300));
-            wallsL1R7.Add(new Rectangle(980, 0, 20, 800));
+            wallsL1R7.Add(new Rectangle(0, 0, 400, 20));
+            wallsL1R7.Add(new Rectangle(600, 0, 400, 20));
+            wallsL1R7.Add(new Rectangle(0, 0, 20, 1000));
+            wallsL1R7.Add(new Rectangle(980, 0, 20, 300));
+            wallsL1R7.Add(new Rectangle(980, 0, 20, 500));
+            wallsL1R7.Add(new Rectangle(0, 780, 1000, 20));
+
+
 
             healthBoostL1R3 = new Rectangle(400, 350, 60, 60);
             healthBoostL1R6 = new Rectangle(60, 60, 60, 60);
@@ -428,12 +446,8 @@ namespace Final_Project_2026
                     healthBoostL1R3 = new Rectangle(10000, 10000, 1, 1);
                 }
 
-            }
 
-
-            foreach (Workbench workbench in workbenches)
-            {
-                if (player.Hitbox.Intersects(workbench.Location))
+                if (player.Hitbox.Intersects(workbenches[0].Location))
                 {
                     if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
                     {
@@ -441,6 +455,12 @@ namespace Final_Project_2026
                     }
                 }
             }
+
+
+            
+
+            
+            
 
 
             if (screen == Screen.Game && room == Room.Room4)
@@ -577,9 +597,119 @@ namespace Final_Project_2026
                     doorL1R5.Remove(doorL1R5[0]);
                 }
 
+
+
+
+                
+
+
             }
 
-           if (screen == Screen.Workbench)
+
+            if (screen == Screen.Game && room == Room.Room6)
+            {
+                foreach (Rectangle wall in wallsL1R6)
+                {
+                    if (player.Hitbox.Intersects(wall))
+                    {
+                        player.DrawRect.Offset(-player.Speed);
+                    }
+                }
+
+                if (player.Hitbox.Intersects(workbenches[1].Location))
+                {
+                    if (keyboardState.IsKeyDown(Keys.E) && prevKeyboardState.IsKeyUp(Keys.E))
+                    {
+                        screen = Screen.Workbench;
+                    }
+                }
+
+                if (player.DrawRect.Right < 0)
+                {
+                    room = Room.Room5;
+                    player.DrawRect = new Rectangle(950, player.DrawRect.Y, player.DrawRect.Width, player.DrawRect.Height);
+                }
+
+                if (player.DrawRect.Intersects(healthBoostL1R6))
+                {
+                    player.Health = player.MaxHealth;
+                    healthBoostL1R6 = new Rectangle(10000, 10000, 1, 1);
+                }
+
+            }
+
+            if (screen == Screen.Game && room == Room.Room7)
+            {
+                foreach (Rectangle wall in wallsL1R7)
+                {
+                    if (player.Hitbox.Intersects(wall))
+                    {
+                        player.DrawRect.Offset(-player.Speed);
+                    }
+                }
+
+
+                foreach (MeleeGuard meleeGuard in meleeL1R7)
+                {
+                    meleeGuard.Update(gameTime, player);
+
+                    for (int i = 0; i < player.Bullets.Count; i++)
+                    {
+
+                        if (player.Bullets[i].Hitbox.Intersects(meleeGuard.DrawRect))
+                        {
+                            meleeGuard.Health -= player.Damage;
+
+                            player.Bullets.Remove(player.Bullets[i]);
+                        }
+
+                    }
+                }
+
+
+                for (int i = 0; i < shooterL1R7.Count; i++)
+                {
+
+                    for (int j = 0; j < shooterL1R7[i].Bullets.Count; j++)
+                    {
+                        if (shooterL1R7[i].Bullets[j].Hitbox.Intersects(player.DrawRect))
+                        {
+                            player.Health -= 20;
+                            shooterL1R7[i].Bullets.Remove(shooterL1R7[i].Bullets[j]);
+                            j--;
+                        }
+                    }
+
+                    if (shooterL1R7[i].Health <= 0)
+                    {
+                        shooterL1R7[i].ClearBullets();
+                        shooterL1R7.Remove(shooterL1R4[i]);
+                        score += 10;
+                        i--;
+
+                    }
+
+
+
+
+
+                }
+
+                if (player.DrawRect.Left >= 1000)
+                {
+                    room = Room.Room5;
+                    player.DrawRect = new Rectangle(0, player.DrawRect.Y, player.DrawRect.Width, player.DrawRect.Height);
+                }
+
+                if (player.DrawRect.Left >= 1000)
+                {
+                    room = Room.Room8;
+                    player.DrawRect = new Rectangle(player.DrawRect.X, 750, player.DrawRect.Width, player.DrawRect.Height);
+                }
+
+            }
+
+            if (screen == Screen.Workbench)
            {
                 if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released)
                 {
@@ -783,6 +913,36 @@ namespace Final_Project_2026
 
                 workbenches[1].Draw(_spriteBatch);
 
+                _spriteBatch.Draw(healthBoostTexture, healthBoostL1R6, Color.White);
+
+
+            }
+
+
+            if (screen == Screen.Game && room == Room.Room7)
+            {
+                foreach (Rectangle wall in wallsL1R7)
+                {
+                    _spriteBatch.Draw(wallTexture, wall, Color.White);
+                }
+
+
+                for (int i = 0; i < meleeL1R7.Count; i++)
+                {
+                    meleeL1R7[i].Draw(_spriteBatch);
+
+                    _spriteBatch.Draw(healthBarTexture, new Rectangle(meleeL1R7[i].DrawRect.Left - 3, meleeL1R7[i].DrawRect.Top - 10, meleeL1R7[i].MaxHealth * 2, 4), Color.Gray);
+                    _spriteBatch.Draw(healthBarTexture, new Rectangle(meleeL1R7[i].DrawRect.Left - 3, meleeL1R7[i].DrawRect.Top - 10, meleeL1R7[i].Health * 2, 4), Color.Lime);
+                }
+
+
+                for (int i = 0; i < shooterL1R7.Count; i++)
+                {
+                    shooterL1R7[i].Draw(_spriteBatch);
+
+                    _spriteBatch.Draw(healthBarTexture, new Rectangle(shooterL1R7[i].DrawRect.Left - 3, shooterL1R7[i].DrawRect.Top - 10, shooterL1R7[i].MaxHealth * 2, 4), Color.Gray);
+                    _spriteBatch.Draw(healthBarTexture, new Rectangle(shooterL1R7[i].DrawRect.Left - 3, shooterL1R7[i].DrawRect.Top - 10, shooterL1R7[i].Health * 2, 4), Color.Lime);
+                }
             }
 
 
