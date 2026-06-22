@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 
@@ -19,9 +20,10 @@ namespace Final_Project_2026
         public bool _attacking;
         private float _attackSeconds;
         private SpriteEffects _flip;
+        public SoundEffect GuardSound;
 
 
-        public MeleeGuard(Rectangle hitbox, Vector2 position, Vector2 direction, Texture2D texture, int maxHealth, float speed, int damage)
+        public MeleeGuard(Rectangle hitbox, Vector2 position, Vector2 direction, Texture2D texture, int maxHealth, float speed, int damage, SoundEffect guardSound)
         {
             Hitbox = hitbox;
             _texture = texture;
@@ -37,6 +39,7 @@ namespace Final_Project_2026
             Damage = damage;
             _attacking = false;
             _flip = SpriteEffects.None;
+            GuardSound = guardSound;
         }
 
         public void Draw(SpriteBatch spriteBatch)

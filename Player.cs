@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -25,11 +26,13 @@ namespace Final_Project_2026
         public float ReloadTimer;
         public int Health, MaxHealth;
         public int Damage;
+        public SoundEffect FireSound;
+        public SoundEffect ReloadSound;
 
         public List<Bullet> Bullets;
         
 
-        public Player(Rectangle hitbox, Vector2 position, Texture2D texture, Color color, Texture2D bulletTexture, int maxHealth)
+        public Player(Rectangle hitbox, Vector2 position, Texture2D texture, Color color, Texture2D bulletTexture, int maxHealth, SoundEffect fireSound, SoundEffect reloadSound)
         {
             Hitbox = hitbox;
             DrawRect = new Rectangle(position.ToPoint(), new Point(67, 67));
@@ -44,6 +47,8 @@ namespace Final_Project_2026
             Bullets = new List<Bullet>();
             _bulletTexture = bulletTexture;
             Damage = 5;
+            FireSound = fireSound;
+            ReloadSound = reloadSound;
         }
         
         public void Draw(SpriteBatch spriteBatch)
@@ -83,6 +88,7 @@ namespace Final_Project_2026
 
             if ((keyboardState.IsKeyDown(Keys.R) || Ammo == 0) && Reloading == false && Ammo < MaxAmmo)
             {
+                ReloadSound.Play();
                 Reloading = true;
             }
 
@@ -100,6 +106,8 @@ namespace Final_Project_2026
 
             if (mouseState.LeftButton == ButtonState.Pressed && prevMouseState.LeftButton == ButtonState.Released && Reloading == false && Ammo >= 0)
             {
+                FireSound.Play();
+
                 Vector2 direction;
 
                 direction = mouseState.Position.ToVector2() - DrawRect.Center.ToVector2();

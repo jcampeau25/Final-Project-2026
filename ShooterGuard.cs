@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -21,11 +22,13 @@ namespace Final_Project_2026
         public Vector2 Direction;
         public int Health, MaxHealth;
         private float _shootTimer;
-        private double _fireRate;
+        public double FireRate;
         public List<Bullet> Bullets;
         private Random _generator;
+        public SoundEffect FireSound;
+        public SoundEffect GuardSound;
 
-        public ShooterGuard(Rectangle hitbox, Vector2 position, Texture2D texture, Color color, Texture2D bulletTexture, int maxHealth)
+        public ShooterGuard(Rectangle hitbox, Vector2 position, Texture2D texture, Color color, Texture2D bulletTexture, int maxHealth, SoundEffect guardSound, SoundEffect fireSound)
         {
             Hitbox = hitbox;
             DrawRect = new Rectangle(position.ToPoint(), new Point(50, 50));
@@ -39,7 +42,9 @@ namespace Final_Project_2026
             _bulletTexture = bulletTexture;
             _shootTimer = 0;
             _generator = new Random();
-            _fireRate = _generator.NextDouble() + 1;
+            FireRate = _generator.NextDouble() + 1;
+            FireSound = fireSound;
+            GuardSound = guardSound;
         }
 
 
@@ -63,8 +68,10 @@ namespace Final_Project_2026
 
             _shootTimer += (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-            if (_shootTimer >= _fireRate)
+            if (_shootTimer >= FireRate)
             {
+                FireSound.Play();
+
                 Vector2 direction;
 
                 direction = player.DrawRect.Center.ToVector2() - DrawRect.Center.ToVector2();

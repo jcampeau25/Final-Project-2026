@@ -77,6 +77,18 @@
 /processorParam:TextureFormat=Color
 /build:Images/bullet.png
 
+#begin Images/COLTONS JAILHOUSE.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/COLTONS JAILHOUSE.png
+
 #begin Images/crosshair.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -88,6 +100,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Images/crosshair.png
+
+#begin Images/deathScreen.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/deathScreen.png
+
+#begin Images/Escaped.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Images/Escaped.png
 
 #begin Images/guard.png
 /importer:TextureImporter
@@ -113,7 +149,7 @@
 /processorParam:TextureFormat=Color
 /build:Images/healthboost.png
 
-#begin Images/JailhouseIntro.png
+#begin Images/InfoScreen.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -123,7 +159,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:Images/JailhouseIntro.png
+/build:Images/InfoScreen.png
 
 #begin Images/keycard3.png
 /importer:TextureImporter
@@ -196,4 +232,40 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Images/workbench.png
+
+#begin Sounds/CJ3 Music.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/CJ3 Music.wav
+
+#begin Sounds/guardDead.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/guardDead.wav
+
+#begin Sounds/gunshot.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/gunshot.wav
+
+#begin Sounds/heal.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/heal.wav
+
+#begin Sounds/reload.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/reload.wav
+
+#begin Sounds/upgrade.wav
+/importer:WavImporter
+/processor:SoundEffectProcessor
+/processorParam:Quality=Best
+/build:Sounds/upgrade.wav
 
